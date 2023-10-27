@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class AuthDatabaseSeeder extends Seeder
 {
@@ -19,7 +20,7 @@ class AuthDatabaseSeeder extends Seeder
             'name' => 'test dosen',
             'email' => 'dosen@mail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('12345678'),
+            'password' => 'dosentest123',
             'is_active' => true,
         ]);
     }
