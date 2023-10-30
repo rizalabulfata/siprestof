@@ -25,8 +25,12 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(RegionSeeder::class);
         $this->call(AuthDatabaseSeeder::class);
+
+        // optional seeder
         $this->call(PegawaiSeeder::class);
         $this->call(MahasiswaSeeder::class);
+        $this->call(MahasiswaUnitSeeder::class);
+        $this->call(UnitSeeder::class);
         $this->call(KodifikasiSeeder::class);
         $this->call(KompetisiSeeder::class);
         $this->call(OrganisasiSeeder::class);
