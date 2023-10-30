@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePegawaiTable extends Migration
+class CreateKodifikasiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,13 +19,14 @@ class CreatePegawaiTable extends Migration
             return new Blueprint($table, $callback);
         });
 
-        $schema->create('pegawai', function (Blueprint $table) {
+        $schema->create('kodifikasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('region_id')->nullable()->references('id')->on('districts')->restrictOnDelete()->cascadeOnUpdate();
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
-            $table->string('no_hp')->nullable();
+            $table->string('code', 20)->unique();
+            $table->string('name');
+            $table->string('second_name')->nullable();
+            $table->integer('skor')->default(0);
+            $table->enum('kategori', ['internasional', 'regional', 'nasional', 'provinsi', 'kabupaten']);
+            $table->enum('bidang', ['kompetisi', 'penghargaan', 'karya', 'org_ket', 'org_waket', 'org_sekret', 'org_benda', 'org_gp', 'org_member']);
             $table->commonFields();
         });
     }
@@ -37,6 +38,6 @@ class CreatePegawaiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pegawai');
+        Schema::dropIfExists('kodifikasi');
     }
 }

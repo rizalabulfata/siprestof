@@ -30,7 +30,10 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "LaravelFrontendPresets\\ArgonPreset\\": "presets/argon/src"
-        }
+        },
+        "files": [
+            "app/Helpers/Faker.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
