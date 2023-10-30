@@ -25,5 +25,16 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(RegionSeeder::class);
         $this->call(AuthDatabaseSeeder::class);
+        $this->call(PegawaiSeeder::class);
+        $this->call(MahasiswaSeeder::class);
+        $this->call(KodifikasiSeeder::class);
+        $this->call(KompetisiSeeder::class);
+        $this->call(OrganisasiSeeder::class);
+        $this->call(PenghargaanSeeder::class);
+        $this->call(HKBukuSeeder::class);
+        $this->call(HKArtikelSeeder::class);
+        $this->call(HKDesainProdukSeeder::class);
+        $this->call(HKFilmSeeder::class);
+        $this->call(HKAplikomSeeder::class);
     }
 }
