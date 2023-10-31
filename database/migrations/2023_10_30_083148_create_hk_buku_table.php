@@ -30,6 +30,7 @@ class CreateHkBukuTable extends Migration
             $table->integer('page_total')->nullable();
             $table->char('year', 4)->nullable();
             $table->json('documentation');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

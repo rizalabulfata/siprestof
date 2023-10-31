@@ -30,6 +30,7 @@ class CreateKompetisiTable extends Migration
             $table->char('year', 4)->nullable();
             $table->json('documentation');
             $table->json('certificate');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

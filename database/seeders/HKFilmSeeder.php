@@ -23,6 +23,7 @@ class HKFilmSeeder extends Seeder
         $kodifikasi = array_column($kodifikasi, 'id');
 
         $genre = ['fiksi', 'comedy', 'sci-fi', 'horror', 'science', 'biography', 'history'];
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             HKFilm::create([
@@ -32,7 +33,9 @@ class HKFilmSeeder extends Seeder
                 'genre' => fake()->randomElement($genre),
                 'desc' => fake()->sentences(30, true),
                 'date' => fake()->date(),
-                'url' => fake()->url
+                'url' => fake()->url,
+                'approval_status' => fake()->randomElement($status)
+
             ]);
         }
     }
