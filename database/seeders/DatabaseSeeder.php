@@ -27,10 +27,10 @@ class DatabaseSeeder extends Seeder
         $this->call(AuthDatabaseSeeder::class);
 
         // optional seeder
+        $this->call(UnitSeeder::class);
         $this->call(PegawaiSeeder::class);
         $this->call(MahasiswaSeeder::class);
-        $this->call(MahasiswaUnitSeeder::class);
-        $this->call(UnitSeeder::class);
+        $this->call(KelasSeeder::class);
         $this->call(KodifikasiSeeder::class);
         $this->call(KompetisiSeeder::class);
         $this->call(OrganisasiSeeder::class);
