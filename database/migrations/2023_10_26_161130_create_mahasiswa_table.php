@@ -22,6 +22,7 @@ class CreateMahasiswaTable extends Migration
         $schema->create('mahasiswa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('unit_id')->references('id')->on('unit')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('region_id')->nullable()->references('id')->on('districts')->restrictOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->string('nim', 20);

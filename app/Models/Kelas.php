@@ -6,14 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Mahasiswa extends Model
+class Kelas extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * Table's name
-     */
-    protected $table = 'mahasiswa';
+    protected $table = 'kelas';
 
     /**
      * The attributes that are mass assignable.
@@ -23,21 +20,6 @@ class Mahasiswa extends Model
     protected $fillable = [];
 
     protected $guarded = ['id'];
-
-    public function unit()
-    {
-        return $this->belongsTo(Unit::class);
-    }
-
-    public function organisasi()
-    {
-        return $this->hasMany(Organisasi::class);
-    }
-
-    public function kelas()
-    {
-        return $this->hasMany(Kelas::class)->orderBy('id', 'desc');
-    }
 
     /**
      * The attributes that should be cast.

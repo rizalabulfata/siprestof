@@ -5,7 +5,7 @@ use App\Helpers\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMahasiswaUnitTable extends Migration
+class CreateKelasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,10 +19,11 @@ class CreateMahasiswaUnitTable extends Migration
             return new Blueprint($table, $callback);
         });
 
-        $schema->create('mahasiswa_unit', function (Blueprint $table) {
+        $schema->create('kelas', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('mahasiswa_id')->references('id')->on('mahasiswa')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('unit_id')->references('id')->on('unit')->restrictOnDelete()->cascadeOnUpdate();
             $table->char('periode', 5);
+            $table->char('kelas', 3);
             $table->commonFields();
         });
     }
@@ -34,6 +35,6 @@ class CreateMahasiswaUnitTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mahasiswa_unit');
+        Schema::dropIfExists('kelas');
     }
 }
