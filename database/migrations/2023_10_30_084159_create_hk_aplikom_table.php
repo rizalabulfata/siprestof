@@ -27,6 +27,7 @@ class CreateHkAplikomTable extends Migration
             $table->text('desc')->nullable();
             $table->char('year', 4)->nullable();
             $table->text('url')->nullable();
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

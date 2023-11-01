@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Kompetisi extends Model
@@ -23,6 +23,11 @@ class Kompetisi extends Model
     protected $fillable = [];
 
     protected $guarded = ['id'];
+
+    public function kodifikasi()
+    {
+        return $this->belongsTo(Kodifikasi::class);
+    }
 
     /**
      * The attributes that should be cast.

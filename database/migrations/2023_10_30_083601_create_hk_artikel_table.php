@@ -27,6 +27,7 @@ class CreateHkArtikelTable extends Migration
             $table->string('publisher')->nullable();
             $table->timestamp('issue_at')->nullable();
             $table->string('url');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

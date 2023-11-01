@@ -23,6 +23,7 @@ class HKBukuSeeder extends Seeder
         $kodifikasi = array_column($kodifikasi, 'id');
 
         $type = ['fiksi', 'ilmiah', 'sci-fi', 'horro', 'science', 'pendidikan', 'informatika'];
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             HKBuku::create([
@@ -37,7 +38,8 @@ class HKBukuSeeder extends Seeder
                 'documentation' => json_encode([
                     ['name' => 'certificate.jpg'],
                     ['name' => 'dummy.pdf']
-                ])
+                ]),
+                'approval_status' => fake()->randomElement($status)
             ]);
         }
     }

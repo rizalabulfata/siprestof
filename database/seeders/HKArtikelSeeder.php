@@ -21,6 +21,7 @@ class HKArtikelSeeder extends Seeder
 
         $kodifikasi = Kodifikasi::where('bidang', '=', 'karya')->get(['id'])->toArray();
         $kodifikasi = array_column($kodifikasi, 'id');
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             HKArtikel::create([
@@ -29,7 +30,8 @@ class HKArtikelSeeder extends Seeder
                 'name' => fake()->words(15, true),
                 'publisher' => fake()->company,
                 'issue_at' => fake()->dateTimeThisYear(),
-                'url' => fake()->url
+                'url' => fake()->url,
+                'approval_status' => fake()->randomElement($status)
             ]);
         }
     }

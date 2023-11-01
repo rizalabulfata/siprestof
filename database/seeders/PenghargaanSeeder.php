@@ -21,11 +21,13 @@ class PenghargaanSeeder extends Seeder
 
         $kodifikasi = Kodifikasi::where('bidang', '=', 'penghargaan')->get(['id'])->toArray();
         $kodifikasi = array_column($kodifikasi, 'id');
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             PenghargaanFactory::new()->create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
-                'mahasiswa_id' => fake()->randomElement($mahasiswas)
+                'mahasiswa_id' => fake()->randomElement($mahasiswas),
+                'approval_status' => fake()->randomElement($status)
             ]);
         }
     }

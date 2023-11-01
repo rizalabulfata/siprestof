@@ -21,6 +21,7 @@ class HKDesainProdukSeeder extends Seeder
 
         $kodifikasi = Kodifikasi::where('bidang', '=', 'karya')->get(['id'])->toArray();
         $kodifikasi = array_column($kodifikasi, 'id');
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             HKDesainProduk::create([
@@ -31,7 +32,8 @@ class HKDesainProdukSeeder extends Seeder
                 'mockup' => json_encode([
                     ['name' => 'certificate.jpg'],
                     ['name' => 'dummy.pdf']
-                ])
+                ]),
+                'approval_status' => fake()->randomElement($status)
             ]);
         }
     }
