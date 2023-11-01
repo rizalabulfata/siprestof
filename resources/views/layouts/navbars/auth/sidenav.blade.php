@@ -3,7 +3,7 @@
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" href="{{ route('home') }}" target="_blank">
+        <a class="navbar-brand m-0" href="{{ route('dashboard.index') }}" target="_blank">
             <img src="./img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
             <span class="ms-1 font-weight-bold">SIPRESTOF</span>
         </a>
@@ -12,8 +12,8 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}"
-                    href="{{ route('home') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'dashboard.index' ? 'active' : '' }}"
+                    href="{{ route('dashboard.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
@@ -37,7 +37,7 @@
                     <span class="nav-link-text ms-1">Mahasiswa</span>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ str_contains(request()->url(), 'user-management') == true ? 'active' : '' }}"
                     href="{{ route('page', ['page' => 'user-management']) }}">
                     <div
@@ -46,13 +46,13 @@
                     </div>
                     <span class="nav-link-text ms-1">User</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pages</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ str_contains(request()->url(), 'tables') == true ? 'active' : '' }}"
-                    href="{{ route('page', ['page' => 'tables']) }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'prestasi.index' ? 'active' : '' }}"
+                    href="{{ route('prestasi.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
@@ -80,7 +80,7 @@
                     <span class="nav-link-text ms-1">Verifikasi CU</span>
                 </a>
             </li>
-            <!-- <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'rtl' ? 'active' : '' }}" href="{{ route('rtl') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -118,9 +118,9 @@
                     </div>
                     <span class="nav-link-text ms-1">Sign Up</span>
                 </a>
-            </li> -->
-        </ul>
-        {{-- <div class="card card-plain shadow-none" id="sidenavCard">
+            </li>
+        </ul> --}}
+            {{-- <div class="card card-plain shadow-none" id="sidenavCard">
             <img class="w-50 mx-auto" src="/img/illustrations/icon-documentation-warning.svg" alt="sidebar_illustration">
             <div class="card-body text-center p-3 w-100 pt-0">
                 <div class="docs-info">
