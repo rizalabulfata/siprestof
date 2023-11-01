@@ -1,0 +1,347 @@
+[
+    {
+        "code": "KOMP_1A",
+        "name": "Kompetisi",
+        "skor": 50,
+        "kategori": "internasional",
+        "bidang": "kompetisi"
+    },
+    {
+        "code": "KOMP_1B",
+        "name": "Kompetisi",
+        "skor": 40,
+        "kategori": "regional",
+        "bidang": "kompetisi"
+    },
+    {
+        "code": "KOMP_1C",
+        "name": "Kompetisi",
+        "skor": 30,
+        "kategori": "nasional",
+        "bidang": "kompetisi"
+    },
+    {
+        "code": "KOMP_1D",
+        "name": "Kompetisi",
+        "skor": 20,
+        "kategori": "provinsi",
+        "bidang": "kompetisi"
+    },
+    {
+        "code": "KOMP_1E",
+        "name": "Kompetisi",
+        "skor": 10,
+        "kategori": "kabupaten",
+        "bidang": "kompetisi"
+    },
+    {
+        "code": "ACHI_2A",
+        "name": "Penghargaan",
+        "skor": 50,
+        "kategori": "internasional",
+        "bidang": "penghargaan"
+    },
+    {
+        "code": "ACHI_2B",
+        "name": "Penghargaan",
+        "skor": 40,
+        "kategori": "regional",
+        "bidang": "penghargaan"
+    },
+    {
+        "code": "ACHI_2C",
+        "name": "Penghargaan",
+        "skor": 30,
+        "kategori": "nasional",
+        "bidang": "penghargaan"
+    },
+    {
+        "code": "ACHI_2D",
+        "name": "Penghargaan",
+        "skor": 20,
+        "kategori": "provinsi",
+        "bidang": "penghargaan"
+    },
+    {
+        "code": "ACHI_2E",
+        "name": "Penghargaan",
+        "skor": 10,
+        "kategori": "kabupaten",
+        "bidang": "penghargaan"
+    },
+    {
+        "code": "CREA_3A",
+        "name": "Hasil Karya",
+        "skor": 50,
+        "kategori": "internasional",
+        "bidang": "karya"
+    },
+    {
+        "code": "CREA_3B",
+        "name": "Hasil Karya",
+        "skor": 40,
+        "kategori": "regional",
+        "bidang": "karya"
+    },
+    {
+        "code": "CREA_3C",
+        "name": "Hasil Karya",
+        "skor": 30,
+        "kategori": "nasional",
+        "bidang": "karya"
+    },
+    {
+        "code": "CREA_3D",
+        "name": "Hasil Karya",
+        "skor": 20,
+        "kategori": "provinsi",
+        "bidang": "karya"
+    },
+    {
+        "code": "CREA_3E",
+        "name": "Hasil Karya",
+        "skor": 10,
+        "kategori": "kabupaten",
+        "bidang": "karya"
+    },
+    {
+        "code": "ORGA_4A",
+        "name": "Karir Organisasi",
+        "second_name": "Ketua",
+        "skor": 50,
+        "kategori": "internasional",
+        "bidang": "org_ket"
+    },
+    {
+        "code": "ORGA_4B",
+        "name": "Karir Organisasi",
+        "second_name": "Ketua",
+        "skor": 40,
+        "kategori": "regional",
+        "bidang": "org_ket"
+    },
+    {
+        "code": "ORGA_4C",
+        "name": "Karir Organisasi",
+        "second_name": "Ketua",
+        "skor": 30,
+        "kategori": "nasional",
+        "bidang": "org_ket"
+    },
+    {
+        "code": "ORGA_4D",
+        "name": "Karir Organisasi",
+        "second_name": "Ketua",
+        "skor": 20,
+        "kategori": "provinsi",
+        "bidang": "org_ket"
+    },
+    {
+        "code": "ORGA_4E",
+        "name": "Karir Organisasi",
+        "second_name": "Ketua",
+        "skor": 10,
+        "kategori": "kabupaten",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_5A",
+        "name": "Karir Organisasi",
+        "second_name": "Wakil Ketua",
+        "skor": 45,
+        "kategori": "internasional",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_5B",
+        "name": "Karir Organisasi",
+        "second_name": "Wakil Ketua",
+        "skor": 35,
+        "kategori": "regional",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_5C",
+        "name": "Karir Organisasi",
+        "second_name": "Wakil Ketua",
+        "skor": 25,
+        "kategori": "nasional",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_5D",
+        "name": "Karir Organisasi",
+        "second_name": "Wakil Ketua",
+        "skor": 15,
+        "kategori": "provinsi",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_5E",
+        "name": "Karir Organisasi",
+        "second_name": "Wakil Ketua",
+        "skor": 8,
+        "kategori": "kabupaten",
+        "bidang": "org_waket"
+    },
+    {
+        "code": "ORGA_6A",
+        "name": "Karir Organisasi",
+        "second_name": "Sekretaris",
+        "skor": 40,
+        "kategori": "internasional",
+        "bidang": "org_sekret"
+    },
+    {
+        "code": "ORGA_6B",
+        "name": "Karir Organisasi",
+        "second_name": "Sekretaris",
+        "skor": 30,
+        "kategori": "regional",
+        "bidang": "org_sekret"
+    },
+    {
+        "code": "ORGA_6C",
+        "name": "Karir Organisasi",
+        "second_name": "Sekretaris",
+        "skor": 20,
+        "kategori": "nasional",
+        "bidang": "org_sekret"
+    },
+    {
+        "code": "ORGA_6D",
+        "name": "Karir Organisasi",
+        "second_name": "Sekretaris",
+        "skor": 10,
+        "kategori": "provinsi",
+        "bidang": "org_sekret"
+    },
+    {
+        "code": "ORGA_6E",
+        "name": "Karir Organisasi",
+        "second_name": "Sekretaris",
+        "skor": 6,
+        "kategori": "kabupaten",
+        "bidang": "org_sekret"
+    },
+    {
+        "code": "ORGA_7A",
+        "name": "Karir Organisasi",
+        "second_name": "Bendahara",
+        "skor": 40,
+        "kategori": "internasional",
+        "bidang": "org_benda"
+    },
+    {
+        "code": "ORGA_7B",
+        "name": "Karir Organisasi",
+        "second_name": "Bendahara",
+        "skor": 30,
+        "kategori": "regional",
+        "bidang": "org_benda"
+    },
+    {
+        "code": "ORGA_7C",
+        "name": "Karir Organisasi",
+        "second_name": "Bendahara",
+        "skor": 20,
+        "kategori": "nasional",
+        "bidang": "org_benda"
+    },
+    {
+        "code": "ORGA_7D",
+        "name": "Karir Organisasi",
+        "second_name": "Bendahara",
+        "skor": 10,
+        "kategori": "provinsi",
+        "bidang": "org_benda"
+    },
+    {
+        "code": "ORGA_7E",
+        "name": "Karir Organisasi",
+        "second_name": "Bendahara",
+        "skor": 6,
+        "kategori": "kabupaten",
+        "bidang": "org_benda"
+    },
+    {
+        "code": "ORGA_8A",
+        "name": "Karir Organisasi",
+        "second_name": "Satu tingkat dibawah PH",
+        "skor": 30,
+        "kategori": "internasional",
+        "bidang": "org_gp"
+    },
+    {
+        "code": "ORGA_8B",
+        "name": "Karir Organisasi",
+        "second_name": "Satu tingkat dibawah PH",
+        "skor": 20,
+        "kategori": "regional",
+        "bidang": "org_gp"
+    },
+    {
+        "code": "ORGA_8C",
+        "name": "Karir Organisasi",
+        "second_name": "Satu tingkat dibawah PH",
+        "skor": 10,
+        "kategori": "nasional",
+        "bidang": "org_gp"
+    },
+    {
+        "code": "ORGA_8D",
+        "name": "Karir Organisasi",
+        "second_name": "Satu tingkat dibawah PH",
+        "skor": 5,
+        "kategori": "provinsi",
+        "bidang": "org_gp"
+    },
+    {
+        "code": "ORGA_8E",
+        "name": "Karir Organisasi",
+        "second_name": "Satu tingkat dibawah PH",
+        "skor": 2,
+        "kategori": "kabupaten",
+        "bidang": "org_gp"
+    },
+    {
+        "code": "ORGA_9A",
+        "name": "Karir Organisasi",
+        "second_name": "Anggota",
+        "skor": 10,
+        "kategori": "internasional",
+        "bidang": "org_member"
+    },
+    {
+        "code": "ORGA_9B",
+        "name": "Karir Organisasi",
+        "second_name": "Anggota",
+        "skor": 5,
+        "kategori": "regional",
+        "bidang": "org_member"
+    },
+    {
+        "code": "ORGA_9C",
+        "name": "Karir Organisasi",
+        "second_name": "Anggota",
+        "skor": 3,
+        "kategori": "nasional",
+        "bidang": "org_member"
+    },
+    {
+        "code": "ORGA_9D",
+        "name": "Karir Organisasi",
+        "second_name": "Anggota",
+        "skor": 2,
+        "kategori": "provinsi",
+        "bidang": "org_member"
+    },
+    {
+        "code": "ORGA_9E",
+        "name": "Karir Organisasi",
+        "second_name": "Anggota",
+        "skor": 1,
+        "kategori": "kabupaten",
+        "bidang": "org_member"
+    }
+]

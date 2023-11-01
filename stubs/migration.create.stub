@@ -1,11 +1,11 @@
 <?php
 
-use App\Helpers\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Helpers\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePegawaiTable extends Migration
+class {{ class }} extends Migration
 {
     /**
      * Run the migrations.
@@ -19,13 +19,8 @@ class CreatePegawaiTable extends Migration
             return new Blueprint($table, $callback);
         });
 
-        $schema->create('pegawai', function (Blueprint $table) {
+        $schema->create('{{ table }}', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('region_id')->nullable()->references('id')->on('districts')->restrictOnDelete()->cascadeOnUpdate();
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
-            $table->string('no_hp')->nullable();
             $table->commonFields();
         });
     }
@@ -37,6 +32,6 @@ class CreatePegawaiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pegawai');
+        Schema::dropIfExists('{{ table }}');
     }
 }

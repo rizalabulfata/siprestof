@@ -1,11 +1,11 @@
 <?php
 
-use App\Helpers\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Helpers\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePegawaiTable extends Migration
+class CreateKelasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,13 +19,11 @@ class CreatePegawaiTable extends Migration
             return new Blueprint($table, $callback);
         });
 
-        $schema->create('pegawai', function (Blueprint $table) {
+        $schema->create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('region_id')->nullable()->references('id')->on('districts')->restrictOnDelete()->cascadeOnUpdate();
-            $table->string('address')->nullable();
-            $table->string('email')->nullable();
-            $table->string('no_hp')->nullable();
+            $table->foreignId('mahasiswa_id')->references('id')->on('mahasiswa')->restrictOnDelete()->cascadeOnUpdate();
+            $table->char('periode', 5);
+            $table->char('kelas', 3);
             $table->commonFields();
         });
     }
@@ -37,6 +35,6 @@ class CreatePegawaiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pegawai');
+        Schema::dropIfExists('kelas');
     }
 }
