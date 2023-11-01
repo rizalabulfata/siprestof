@@ -152,7 +152,7 @@ h6, .h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0,3rem;
 }
 
 abbr[title],
@@ -23040,7 +23040,7 @@ p, .p {
 }
 
 .text-xxs {
-  font-size: 0.65rem !important;
+  font-size: 0.70rem !important;
 }
 
 p {
