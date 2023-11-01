@@ -31,6 +31,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\PortofolioController;
 
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -46,6 +47,7 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 
 Route::resource('mahasiswa', MahasiswaController::class);
+Route::resource('portofolio', PortofolioController::class);
 
 Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::group(['middleware' => 'auth'], function () {

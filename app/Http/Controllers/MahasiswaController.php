@@ -17,10 +17,8 @@ class MahasiswaController extends Controller
      */
     public function index(MahasiswaService $service)
     {
-        $mahasiswa = $service->getListMahasiswa(10, ['unit', 'kelas']);
-        foreach ($mahasiswa as $value) {
-            dd($value->toArray());
-        }
+        $columns = ['id', 'name', 'nim', 'active_kelas', 'unit_id', 'unit_name'];
+        $mahasiswa = $service->getListMahasiswaView(3, ['unit', 'kelas'], [], $columns);
         dd($mahasiswa->toArray());
     }
 

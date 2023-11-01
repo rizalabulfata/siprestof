@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Models\Mahasiswa;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MahasiswaService
 {
@@ -10,18 +11,36 @@ class MahasiswaService
      * ambil seluruh data mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListMahasiswa($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = [])
+    public function getListMahasiswa($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
-        return Mahasiswa::with($relations)->where($conditions)->paginate($n, $columns);
+        return Mahasiswa::with($relations)->where($conditions)->orderBy($order[0], $order[1])->paginate($n, $columns);
     }
 
     /**
      * ambil seluruh data mahasiswa untuk view list
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListMahasiswaView($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = [])
+    public function getListMahasiswaView($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
-        $columns = ['name', 'nim', 'kelas', 'prodi'];
+        $records = $this->getListMahasiswa($n, $relations, $conditions, ['*'], $order)->each(function ($item) use (&$relations) {
+            $upperKelas = 0;
+            foreach ($item->kelas as $kelas) {
+                if ($upperKelas == 0) {
+                    $item->setAttribute('active_kelas', $kelas->kelas);
+                    $item->setAttribute('active_kelas_periode', $kelas->periode);
+                }
+            }
+            $item->setAttribute('unit_name', $item->unit->name);
+        });
+
+        if (count($columns) > 0 && $columns[0] != '*') {
+            $records = $records->map->only($columns);
+        }
+        if (count($columns) == 1 && $columns[0] != '*') {
+            $records = $records->map->only($columns);
+        }
+
+        return new LengthAwarePaginator($records, $records->count(), $n, null);
     }
 
     /**
