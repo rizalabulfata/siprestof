@@ -19,12 +19,13 @@ class MahasiswaController extends Controller
      */
     public function index(Request $request, MahasiswaService $service)
     {
+        $data['title'] = 'Mahasiswa';
         $columns = ['id', 'name', 'nim', 'active_kelas', 'unit_id', 'unit_name', 'valid_date'];
         $data['tables'] = $this->table();
         $data['resource'] = self::RESOURCE;
 
-        $filters = [];
         // filter
+        $filters = [];
         if ($request->search_box) {
             $filters = [
                 'nim' => $request->search_box,
@@ -34,7 +35,7 @@ class MahasiswaController extends Controller
         }
         $data['records'] = $service->getListMahasiswaView(3, $request->p, ['unit', 'kelas'], [], $filters, $columns);
 
-        return view('pages.user-profile', $data);
+        return view('pages.index-list', $data);
     }
 
     /**
@@ -44,7 +45,7 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.tambah', []);
     }
 
     /**
@@ -123,6 +124,10 @@ class MahasiswaController extends Controller
         }
     }
 
+    /**
+     * Render table
+     * @return array
+     */
     public function table(): array
     {
         return [
