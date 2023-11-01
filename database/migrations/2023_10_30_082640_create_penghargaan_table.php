@@ -28,6 +28,7 @@ class CreatePenghargaanTable extends Migration
             $table->string('institution')->nullable();
             $table->date('date');
             $table->json('certificate');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

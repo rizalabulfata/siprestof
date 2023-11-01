@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mahasiswa extends Model
@@ -36,7 +36,17 @@ class Mahasiswa extends Model
 
     public function kelas()
     {
-        return $this->hasMany(Kelas::class)->orderBy('id', 'desc');
+        return $this->hasMany(Kelas::class)->orderBy('periode', 'desc');
+    }
+
+    public function kompetisi()
+    {
+        return $this->hasMany(Kompetisi::class);
+    }
+
+    public function penghargaan()
+    {
+        return $this->hasMany(Penghargaan::class);
     }
 
     /**

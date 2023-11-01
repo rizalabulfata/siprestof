@@ -9,19 +9,32 @@ use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
+    const RESOURCE = 'mahasiswa';
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      * 
      */
-    public function index(MahasiswaService $service)
+    public function index(Request $request, MahasiswaService $service)
     {
-        $mahasiswa = $service->getListMahasiswa(10, ['unit', 'kelas']);
-        foreach ($mahasiswa as $value) {
-            dd($value->toArray());
+        $columns = ['id', 'name', 'nim', 'active_kelas', 'unit_id', 'unit_name', 'valid_date'];
+        $data['tables'] = $this->table();
+        $data['resource'] = self::RESOURCE;
+
+        $filters = [];
+        // filter
+        if ($request->search_box) {
+            $filters = [
+                'nim' => $request->search_box,
+                'name' => $request->search_box,
+                'valid_date' => $request->search_box,
+            ];
         }
-        dd($mahasiswa->toArray());
+        $data['records'] = $service->getListMahasiswaView(3, $request->p, ['unit', 'kelas'], [], $filters, $columns);
+
+        return view('pages.user-profile', $data);
     }
 
     /**
@@ -108,5 +121,23 @@ class MahasiswaController extends Controller
         } catch (Exception $e) {
             $data = $e->getMessage();
         }
+    }
+
+    public function table(): array
+    {
+        return [
+            [
+                'column' => 'nim',
+                'name' => 'NIM',
+            ],
+            [
+                'column' => 'name',
+                'name' => 'Nama',
+            ],
+            [
+                'column' => 'valid_date',
+                'name' => 'Angkatan',
+            ],
+        ];
     }
 }

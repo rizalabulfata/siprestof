@@ -28,6 +28,7 @@ class CreateOrganisasiTable extends Migration
             $table->char('year_end', 4);
             $table->string('sk_number');
             $table->json('certificate');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

@@ -28,6 +28,7 @@ class CreateHkFilmTable extends Migration
             $table->text('desc')->nullable();
             $table->date('date')->nullable();
             $table->text('url')->nullable();
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

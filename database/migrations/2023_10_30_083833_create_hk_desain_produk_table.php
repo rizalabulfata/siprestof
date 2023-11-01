@@ -26,6 +26,7 @@ class CreateHkDesainProdukTable extends Migration
             $table->string('bentuk_desain');
             $table->char('year', 4)->nullable();
             $table->json('mockup');
+            $table->enum('approval_status', ['pending', 'approve', 'reject'])->default('pending');
             $table->commonFields();
         });
     }

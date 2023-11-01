@@ -21,8 +21,7 @@ class HKAplikomSeeder extends Seeder
 
         $kodifikasi = Kodifikasi::where('bidang', '=', 'karya')->get(['id'])->toArray();
         $kodifikasi = array_column($kodifikasi, 'id');
-
-        $genre = ['fiksi', 'comedy', 'sci-fi', 'horror', 'science', 'biography', 'history'];
+        $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
             HKAplikom::create([
@@ -31,7 +30,8 @@ class HKAplikomSeeder extends Seeder
                 'bentuk_aplikom' => 'Aplikasi ' . fake()->words(4, true),
                 'desc' => fake()->words(30, true),
                 'year' => fake()->numberBetween(2010, 2020),
-                'url' => fake()->url
+                'url' => fake()->url,
+                'approval_status' => fake()->randomElement($status)
             ]);
         }
     }
