@@ -1,7 +1,8 @@
 <?php
 
+use App\Helpers\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreatePegawaiTable extends Migration
@@ -13,14 +14,19 @@ class CreatePegawaiTable extends Migration
      */
     public function up()
     {
-        Schema::create('pegawai', function (Blueprint $table) {
+        $schema = DB::getSchemaBuilder();
+        $schema->blueprintResolver(function ($table, $callback) {
+            return new Blueprint($table, $callback);
+        });
+
+        $schema->create('pegawai', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('region_id')->nullable()->references('id')->on('districts')->restrictOnDelete()->cascadeOnUpdate();
-            $table->string('address');
-            $table->string('email');
-            $table->string('no_hp', 13);
-            $table->timestamps();
+            $table->string('address')->nullable();
+            $table->string('email')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->commonFields();
         });
     }
 

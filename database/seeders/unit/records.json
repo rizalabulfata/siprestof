@@ -1,0 +1,49 @@
+[
+    {
+        "id": 1,
+        "name": "Universitas Trunojoyo Madura",
+        "level": "univ"
+    },
+    {
+        "id": 2,
+        "parent_id": 1,
+        "name": "Fakultas Pendidikan",
+        "level": "fakultas"
+    },
+    {
+        "id": 3,
+        "parent_id": 1,
+        "name": "Fakultas Teknik",
+        "level": "fakultas"
+    },
+    {
+        "id": 4,
+        "parent_id": 2,
+        "name": "Pendidikan Informatika",
+        "level": "prodi"
+    },
+    {
+        "id": 5,
+        "parent_id": 2,
+        "name": "PGSD",
+        "level": "prodi"
+    },
+    {
+        "id": 6,
+        "parent_id": 2,
+        "name": "PG PAUD",
+        "level": "prodi"
+    },
+    {
+        "id": 7,
+        "parent_id": 2,
+        "name": "Pendidikan IPA",
+        "level": "prodi"
+    },
+    {
+        "id": 8,
+        "parent_id": 3,
+        "name": "Teknik Informatika",
+        "level": "prodi"
+    }
+]
