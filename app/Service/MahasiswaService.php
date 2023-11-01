@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Models\Mahasiswa;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class MahasiswaService
 {
@@ -11,18 +13,27 @@ class MahasiswaService
      * ambil seluruh data mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListMahasiswa($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListMahasiswa($n = 10, $relations = [], $conditions = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
-        return Mahasiswa::with($relations)->where($conditions)->orderBy($order[0], $order[1])->paginate($n, $columns);
+        return Mahasiswa::with($relations)->where($conditions)
+            ->where(function ($q) use ($search_filters) {
+                foreach ($search_filters as $col => $value) {
+                    $q->orWhere($col, 'like', '%' . $value . '%');
+                }
+            })
+            ->orderBy($order[0], $order[1])->paginate($n, $columns);
     }
 
     /**
      * ambil seluruh data mahasiswa untuk view list
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListMahasiswaView($n = 10, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListMahasiswaView($n = 10, $p = null, $relations = [], $conditions = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
-        $records = $this->getListMahasiswa($n, $relations, $conditions, ['*'], $order)->each(function ($item) use (&$relations) {
+        $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
+        $n = $n <= 0 ? -1 : $n;
+
+        $records = $this->getListMahasiswa(0, $relations, $conditions, $search_filters, ['*'], $order)->each(function ($item) use (&$relations) {
             $upperKelas = 0;
             foreach ($item->kelas as $kelas) {
                 if ($upperKelas == 0) {
@@ -40,7 +51,10 @@ class MahasiswaService
             $records = $records->map->only($columns);
         }
 
-        return new LengthAwarePaginator($records, $records->count(), $n, null);
+        return new LengthAwarePaginator($records->forPage($p, $n), $records->count(), $n, $p, [
+            'path' => route('mahasiswa.index'),
+            'pageName' => 'p'
+        ]);
     }
 
     /**
