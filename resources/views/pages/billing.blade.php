@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-@include('layouts.navbars.auth.topnav', ['title' => 'Billing'])
+@include('layouts.navbars.auth.topnav', ['title' => 'Portofolio'])
 <div class="container-fluid py-4">
     <div class="row mb-4">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -12,7 +12,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Kompetensi</p>
                                 <h5 class="font-weight-bolder">
-                                    $53,000
+                                    10
                                 </h5>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Pengakuan</p>
                                 <h5 class="font-weight-bolder">
-                                    2,300
+                                    11
                                 </h5>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Penghargaan</p>
                                 <h5 class="font-weight-bolder">
-                                    +3,462
+                                    10
                                 </h5>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Karir Organisasi</p>
                                 <h5 class="font-weight-bolder">
-                                    $103,430
+                                    20
                                 </h5>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">hasil karya</p>
                                 <h5 class="font-weight-bolder">
-                                    $53,000
+                                    10
                                 </h5>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">aksi kemanusiaan</p>
                                 <h5 class="font-weight-bolder">
-                                    2,300
+                                    20
                                 </h5>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">kewirausahaan</p>
                                 <h5 class="font-weight-bolder">
-                                    +3,462
+                                   4
                                 </h5>
                             </div>
                         </div>
@@ -327,7 +327,7 @@
         <div class="col-md-12 mt-4">
             <div class="card">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Billing Information</h6>
+                    <h6 class="mb-0">Portofolio Mahasiswa</h6>
                 </div>
                 <div class="card-body pt-4 p-3">
                 <table class="table align-items-center mb-0">
@@ -376,7 +376,7 @@
                                     <p class="text-sm font-weight-bold mb-0">P001</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <p class="text-sm font-weight-bold mb-0">mila</p>
+                                    <p class="text-sm font-weight-bold mb-0">Jamilatul A</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-sm font-weight-bold mb-0">Penghargaan</p>
@@ -390,15 +390,15 @@
                                 <td>
                                     <div class="d-flex px-3 py-1">
                                         <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 text-sm">1</h6>
+                                            <h6 class="mb-0 text-sm">2</h6>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="text-sm font-weight-bold mb-0">P001</p>
+                                    <p class="text-sm font-weight-bold mb-0">P002</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <p class="text-sm font-weight-bold mb-0">mila</p>
+                                    <p class="text-sm font-weight-bold mb-0">Syarifuddin</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-sm font-weight-bold mb-0">Penghargaan</p>
@@ -412,15 +412,15 @@
                                 <td>
                                     <div class="d-flex px-3 py-1">
                                         <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 text-sm">1</h6>
+                                            <h6 class="mb-0 text-sm">3</h6>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="text-sm font-weight-bold mb-0">P001</p>
+                                    <p class="text-sm font-weight-bold mb-0">P003</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <p class="text-sm font-weight-bold mb-0">mila</p>
+                                    <p class="text-sm font-weight-bold mb-0">Aisyah Nuri F</p>
                                 </td>
                                 <td class="align-middle text-center text-sm">
                                     <p class="text-sm font-weight-bold mb-0">Penghargaan</p>

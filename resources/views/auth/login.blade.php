@@ -37,7 +37,7 @@
                                 style="background-image: url('/public/img/utmmm.jpg'); background-size: cover;">
                                 <span class="mask bg-gradient-primary opacity-6"></span>
                                 <h4 class="mt-5 text-black font-weight-bolder position-relative">"SIPRESTOF"</h4>
-                                <p class="text-black position-relative">Sistem Informasi Prestasi dan Portofolio merumakan sistem pendataan prestasi dan portofolio mahasiswa Pendidikan Informatika Universitas Trunojoyo Madura</p>
+                                <p class="text-black position-relative">Sistem Informasi Prestasi dan Portofolio merupakan sistem pendataan prestasi dan portofolio mahasiswa Pendidikan Informatika Universitas Trunojoyo Madura</p>
                             </div>
                         </div>
                     </div>

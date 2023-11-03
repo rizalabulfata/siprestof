@@ -34,7 +34,7 @@
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Mahasiswa</span>
+                    <span class="nav-link-text ms-1">Kelola Mahasiswa</span>
                 </a>
             </li>
             {{-- <li class="nav-item">
@@ -48,7 +48,7 @@
                 </a>
             </li> --}}
             <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pages</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Menu</h6>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'prestasi.index' ? 'active' : '' }}"
@@ -57,7 +57,7 @@
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Prestasi</span>
+                    <span class="nav-link-text ms-1">Prestasi Mahasiswa</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -67,7 +67,7 @@
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Portofolio</span>
+                    <span class="nav-link-text ms-1">Portofolio Mahasiswa</span>
                 </a>
             </li>
             <li class="nav-item">

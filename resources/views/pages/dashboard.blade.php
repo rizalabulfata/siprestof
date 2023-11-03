@@ -12,7 +12,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Mahasiswa</p>
                                 <h5 class="font-weight-bolder">
-                                    $53,000
+                                    10
                                 </h5>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Users</p>
                                 <h5 class="font-weight-bolder">
-                                    2,300
+                                    12
                                 </h5>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Prestasi</p>
                                 <h5 class="font-weight-bolder">
-                                    +3,462
+                                    20
                                 </h5>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Portofolio</p>
                                 <h5 class="font-weight-bolder">
-                                    $103,430
+                                    10
                                 </h5>
                             </div>
                         </div>
