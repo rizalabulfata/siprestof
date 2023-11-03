@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'admin@argon.com',
         //     'password' => bcrypt('secret')
         // ]);
-        $this->call(RoleSeeder::class);
+        $this->call(RoleSeeder::class);;
         $this->call(RegionSeeder::class);
         $this->call(AuthDatabaseSeeder::class);
 
