@@ -58,4 +58,37 @@ class PortofolioService extends Service
             ->where($this->table_mahasiswa . '.id', '=', $id)->get();
         return $model;
     }
+
+    /**
+     * Tampilkan list portofolio belum di approve
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPendingPortofolio()
+    {
+        $karya = [
+            $this->table_hkaplikom, $this->table_hkartikel, $this->table_hkbuku,
+            $this->table_hkdesainproduk, $this->table_hkfilm, $this->table_organisasi
+        ];
+        $data = [];
+        foreach ($karya as $table) {
+            $records = DB::table($table)
+                ->join($this->table_mahasiswa, $this->table_mahasiswa . '.id', '=', $table . '.mahasiswa_id')
+                ->where('approval_status', '=', Model::PENDING)
+                ->get([
+                    $this->table_mahasiswa . '.id',
+                    $this->table_mahasiswa . '.nim',
+                    $this->table_mahasiswa . '.name as mhs_name',
+                    $table . '.*'
+                ])
+                ->each(function ($item) use ($table, &$data) {
+                    $item->type = str_replace('hk_', '', $table);
+                    $item->event = $item->name ??  $item->bentuk_aplikom ?? $item->bentuk_desain;
+                })->toArray();
+
+            $data = array_merge($data, $records);
+        }
+
+        $records = collect($data)->sortBy('created_at', SORT_REGULAR, true);
+        return $records;
+    }
 }

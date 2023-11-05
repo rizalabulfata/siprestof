@@ -24,11 +24,15 @@ class OrganisasiSeeder extends Seeder
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
-            OrganisasiFactory::new()->create([
+            $model = OrganisasiFactory::new()->create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'approval_status' => fake()->randomElement($status)
             ]);
+            $time = fake()->dateTimeThisYear();
+            $model->created_at = $time;
+            $model->updated_at = $time;
+            $model->save();
         }
     }
 }

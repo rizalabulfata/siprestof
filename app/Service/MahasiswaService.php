@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Models\Mahasiswa;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -94,5 +95,23 @@ class MahasiswaService
     {
         $data = $this->showMahasiswa($id);
         return $data->delete();
+    }
+
+    /**
+     * Simpan/update data user
+     * @param array $data
+     * @param int|null $id
+     * @return \App\Models\Mahasiswa
+     */
+    public function saveUser($data, $id = null)
+    {
+        $model = new User();
+        if ($id) {
+            $model = User::findOrFail($id);
+        }
+
+        $model->fill($data);
+        $model->save();
+        return $model;
     }
 }

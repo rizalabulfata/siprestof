@@ -26,7 +26,7 @@ class HKFilmSeeder extends Seeder
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
-            HKFilm::create([
+            $model = HKFilm::create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'name' => 'Film ' . fake()->words(4, true),
@@ -37,6 +37,10 @@ class HKFilmSeeder extends Seeder
                 'approval_status' => fake()->randomElement($status)
 
             ]);
+            $time = fake()->dateTimeThisYear();
+            $model->created_at = $time;
+            $model->updated_at = $time;
+            $model->save();
         }
     }
 }

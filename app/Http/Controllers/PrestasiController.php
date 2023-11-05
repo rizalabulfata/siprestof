@@ -113,14 +113,17 @@ class PrestasiController extends Controller
             [
                 'column' => 'nim',
                 'name' => 'NIM',
+                'visibility' => [self::RESOURCE . '.index']
             ],
             [
                 'column' => 'name',
                 'name' => 'Nama',
+                'visibility' => [self::RESOURCE . '.index']
             ],
             [
                 'column' => 'total',
                 'name' => 'Jumlah Prestasi',
+                'visibility' => [self::RESOURCE . '.index']
             ],
         ];
     }

@@ -44,7 +44,7 @@ class MahasiswaSeeder extends Seeder
                 'no_hp' => fake()->phoneNumber,
                 'last_edu' => fake()->randomElement(['sd', 'smp', 'sma']),
                 'birth_date' => fake()->dateTimeBetween('-20 years', '-19 years'),
-                'valid_date' => now()->addYears(4)->format('Y')
+                'valid_date' => now()->format('Y') . '1'
             ]);
         }
     }

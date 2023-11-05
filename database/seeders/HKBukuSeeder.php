@@ -26,7 +26,7 @@ class HKBukuSeeder extends Seeder
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
-            HKBuku::create([
+            $model = HKBuku::create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'name' => 'Buku ' . fake()->words(4, true),
@@ -41,6 +41,10 @@ class HKBukuSeeder extends Seeder
                 ]),
                 'approval_status' => fake()->randomElement($status)
             ]);
+            $time = fake()->dateTimeThisYear();
+            $model->created_at = $time;
+            $model->updated_at = $time;
+            $model->save();
         }
     }
 }

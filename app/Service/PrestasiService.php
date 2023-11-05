@@ -70,4 +70,42 @@ class PrestasiService extends Service
             ->where($this->table_mahasiswa . '.id', '=', $id)->get();
         return $model;
     }
+
+    /**
+     * Tampilkan list prestasi belum di approve
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPendingPrestasi()
+    {
+        $columns = [
+            $this->table_mahasiswa . '.id',
+            $this->table_mahasiswa . '.nim',
+            $this->table_mahasiswa . '.name'
+        ];
+
+        $komp_kolom = $columns;
+        $komp_kolom[] = $this->table_kompetisi . '.name as event';
+        $komp_kolom[] = $this->table_kompetisi . '.created_at';
+        $kompetisi = DB::table($this->table_mahasiswa)
+            ->join($this->table_kompetisi, $this->table_kompetisi . '.mahasiswa_id', '=', $this->table_mahasiswa . '.id')
+            ->where($this->table_kompetisi . '.approval_status', '=', Model::PENDING)
+            ->get($komp_kolom);
+        $kompetisi->each(function ($item) {
+            $item->type = 'kompetisi';
+        });
+
+        $peng_kolom = $columns;
+        $peng_kolom[] = $this->table_penghargaan . '.name as event';
+        $peng_kolom[] = $this->table_penghargaan . '.created_at';
+        $penghargaan = DB::table($this->table_mahasiswa)
+            ->join($this->table_penghargaan, $this->table_penghargaan . '.mahasiswa_id', '=', $this->table_mahasiswa . '.id')
+            ->where($this->table_penghargaan . '.approval_status', '=', Model::PENDING)
+            ->get($peng_kolom);
+        $penghargaan->each(function ($item) {
+            $item->type = 'penghargaan';
+        });
+
+        $records = collect(array_merge($kompetisi->toArray(), $penghargaan->toArray()))->sortBy('created_at', SORT_REGULAR, true);
+        return $records;
+    }
 }

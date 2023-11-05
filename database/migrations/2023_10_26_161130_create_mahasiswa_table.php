@@ -31,7 +31,7 @@ class CreateMahasiswaTable extends Migration
             $table->string('no_hp')->nullable();
             $table->enum('last_edu', ['sd', 'smp', 'sma', 'd1', 'd2', 'd3', 'd4', 's1', 's2', 's3'])->nullable();
             $table->date('birth_date')->nullable();
-            $table->string('valid_date', 4)->nullable();
+            $table->string('valid_date', 5)->nullable();
             $table->commonFields();
         });
     }

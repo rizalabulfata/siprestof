@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\DashboardService;
+use App\Service\PortofolioService;
+use App\Service\PrestasiService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,9 +14,24 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(DashboardService $service)
     {
-        return (new HomeController)->index();
+        // ambil pending prestasi
+        $prestasiService = new PrestasiService();
+        $prestasi = $prestasiService->getPendingPrestasi();
+        $data['prestasi'] = $prestasi;
+        $data['prestasi_total'] = $prestasi->count();
+
+        // ambil pending portofolio
+        $portoService = new PortofolioService();
+        $porto = $portoService->getPendingPortofolio();
+        $data['porto'] = $porto;
+        $data['porto_total'] = $porto->count();
+
+        // summary dashboard
+        $data['summary'] = $service->getSummary();
+
+        return view('pages.dashboard', $data);
     }
 
     /**
