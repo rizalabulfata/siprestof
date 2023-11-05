@@ -24,7 +24,7 @@ class HKArtikelSeeder extends Seeder
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
-            HKArtikel::create([
+            $model = HKArtikel::create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'name' => fake()->words(15, true),
@@ -33,6 +33,10 @@ class HKArtikelSeeder extends Seeder
                 'url' => fake()->url,
                 'approval_status' => fake()->randomElement($status)
             ]);
+            $time = fake()->dateTimeThisYear();
+            $model->created_at = $time;
+            $model->updated_at = $time;
+            $model->save();
         }
     }
 }

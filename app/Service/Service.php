@@ -13,6 +13,7 @@ use App\Models\Kompetisi;
 use App\Models\Mahasiswa;
 use App\Models\Organisasi;
 use App\Models\Penghargaan;
+use App\Models\User;
 
 class Service
 {
@@ -27,6 +28,7 @@ class Service
     protected $table_hkbuku;
     protected $table_hkdesainproduk;
     protected $table_hkfilm;
+    protected $table_user;
 
     public function __construct()
     {
@@ -39,7 +41,8 @@ class Service
         $this->table_hkaplikom = (new HKAplikom())->getTable();
         $this->table_hkartikel = (new HKArtikel())->getTable();
         $this->table_hkbuku = (new HKBuku())->getTable();
-        $this->table_hkdesainproduk = (new HKDesainProduk());
-        $this->table_hkfilm = (new HKFilm());
+        $this->table_hkdesainproduk = (new HKDesainProduk())->getTable();
+        $this->table_hkfilm = (new HKFilm())->getTable();
+        $this->table_user = (new User())->getTable();
     }
 }

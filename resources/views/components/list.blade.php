@@ -3,6 +3,7 @@
     'records' => [],
     'columns' => [],
     'resource' => null,
+    'allowedVisibility' => [Route::currentRouteName()],
 ])
 
 <div class="row mt-4">
@@ -18,10 +19,16 @@
                             <thead>
                                 <tr>
                                     @foreach ($columns as $column)
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            {{ $column['name'] }}
-                                        </th>
+                                        @isset($column['visibility'])
+                                            @foreach ($column['visibility'] as $v)
+                                                @if (in_array($v, $allowedVisibility))
+                                                    <th
+                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                        {{ $column['name'] }}
+                                                    </th>
+                                                @endif
+                                            @endforeach
+                                        @endisset
                                     @endforeach
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -33,10 +40,17 @@
                                 @foreach ($records as $record)
                                     <tr>
                                         @foreach ($columns as $column)
-                                            <td class="align-middle text-center text-sm">
-                                                <p class="text-sm font-weight-bold mb-0">
-                                                    {{ $record->{$column['column']} ?? $record[$column['column']] }}</p>
-                                            </td>
+                                            @isset($column['visibility'])
+                                                @foreach ($column['visibility'] as $v)
+                                                    @if (in_array($v, $allowedVisibility))
+                                                        <td class="align-middle text-center text-sm">
+                                                            <p class="text-sm font-weight-bold mb-0">
+                                                                {{ $record->{$column['column']} ?? $record[$column['column']] }}
+                                                            </p>
+                                                        </td>
+                                                    @endif
+                                                @endforeach
+                                            @endisset
                                         @endforeach
                                         <td class="align-middle text-center">
                                             <a href="{{ route($resource . '.show', $record->id ?? $record['id']) }}"

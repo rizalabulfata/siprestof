@@ -24,7 +24,7 @@ class HKAplikomSeeder extends Seeder
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
-            HKAplikom::create([
+            $model = HKAplikom::create([
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'bentuk_aplikom' => 'Aplikasi ' . fake()->words(4, true),
@@ -33,6 +33,10 @@ class HKAplikomSeeder extends Seeder
                 'url' => fake()->url,
                 'approval_status' => fake()->randomElement($status)
             ]);
+            $time = fake()->dateTimeThisYear();
+            $model->created_at = $time;
+            $model->updated_at = $time;
+            $model->save();
         }
     }
 }

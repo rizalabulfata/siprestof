@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class MahasiswaRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class MahasiswaRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -27,13 +28,13 @@ class MahasiswaRequest extends FormRequest
             'unit_id' => '',
             'region_id' => '',
             'name' => 'required|string',
-            'nim' => 'required|string|max:13',
+            'nim' => 'required|numeric|digits:12',
             'address' => 'nullable',
             'email' => 'required|email',
             'no_hp' => 'nullable|max:13',
-            'last_edu' => 'required|in:sd,smp,sma,d1,d2,d3,d4,s1,s2,s3',
+            // 'last_edu' => 'required|in:sd,smp,sma,d1,d2,d3,d4,s1,s2,s3',
             'birth_date' => 'nullable|date',
-            'valid_date' => 'nullable|string|max:4',
+            'valid_date' => 'nullable|string|max:5',
         ];
     }
 }
