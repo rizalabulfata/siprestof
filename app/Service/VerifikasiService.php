@@ -50,4 +50,46 @@ class VerifikasiService extends Service
             'pageName' => 'p'
         ]);
     }
+
+    /**
+     * Tampilkan detail data verifikasi
+     * @return \App\Models\Model
+     */
+    public function showDetailVerifikasi($id, $type)
+    {
+        $tables = [
+            'aplikom' => $this->table_hkaplikom,
+            'artikel' => $this->table_hkartikel,
+            'buku' => $this->table_hkbuku,
+            'desain_produk' => $this->table_hkdesainproduk,
+            'film' => $this->table_hkfilm,
+            'kompetisi' => $this->table_kompetisi,
+            'penghargaan' => $this->table_penghargaan
+        ];
+        $columnName = [
+            'aplikom' => 'bentuk_aplikom',
+            'desain_produk' => 'bentuk_desain'
+        ];
+        $cname = 'name';
+        if (isset($columnName[$type])) {
+            $cname = $columnName[$type];
+        }
+
+        $columns = [
+            $this->table_kodifikasi . '.code as kod_code',
+            $this->table_kodifikasi . '.second_name as kod_second_name',
+            $this->table_kodifikasi . '.kategori as kod_kategori',
+            $this->table_mahasiswa . '.nim as mhs_nim',
+            $this->table_mahasiswa . '.name as mhs_name',
+            $tables[$type] . '.' . $cname . ' as event',
+            $tables[$type] . '.*'
+        ];
+
+        $record = DB::table($tables[$type])
+            ->join($this->table_kodifikasi, $this->table_kodifikasi . '.id', '=', $tables[$type] . '.kodifikasi_id')
+            ->join($this->table_mahasiswa, $this->table_mahasiswa . '.id', '=', $tables[$type] . '.mahasiswa_id')
+            ->where($tables[$type] . '.id', '=', $id)
+            ->first($columns);
+        return $record;
+    }
 }

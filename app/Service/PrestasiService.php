@@ -177,6 +177,9 @@ class PrestasiService extends Service
         return $records;
     }
 
+    /**
+     * Tampilkan detail prestasi
+     */
     public function showDetailPrestasi($id, $type)
     {
         $record = DB::table($type)

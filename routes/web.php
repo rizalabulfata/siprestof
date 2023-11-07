@@ -48,16 +48,25 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('mahasiswa', MahasiswaController::class);
     Route::resource('portofolio', PortofolioController::class);
     Route::resource('prestasi', PrestasiController::class);
-    Route::prefix('verifikasi')->as('verifikasi.')->group(function () {
-        Route::get('/', [VerifikasiController::class, 'index'])->name('index');
+    Route::resource('verifikasi', VerifikasiController::class);
+    // Route::prefix('verifikasi')->as('verifikasi.')->group(function () {
+    //     Route::get('/', [VerifikasiController::class, 'index'])->name('index');
 
-        // kompetisi
-        Route::get('kompetisi', [VerifikasiController::class, 'kompetisiCreate'])->name('kompetisi.crete');
-        Route::get('kompetisi/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('kompetisi.show');
-        Route::post('kompetisi/{id}', [VerifikasiController::class, 'kompetisiStore'])->name('kompetisi.store');
-        Route::get('kompetisi/{id}/edit', [VerifikasiController::class, 'kompetisiEdit'])->name('kompetisi.edit');
-        Route::post('kompetisi/{id}/approve', [VerifikasiController::class, 'kompetisiApprove'])->name('kompetisi.approve');
-    });
+    //     // kompetisi
+    //     Route::get('kompetisi', [VerifikasiController::class, 'kompetisiCreate'])->name('kompetisi.crete');
+    //     Route::get('kompetisi/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('kompetisi.show');
+    //     Route::post('kompetisi/{id}', [VerifikasiController::class, 'kompetisiStore'])->name('kompetisi.store');
+    //     Route::get('kompetisi/{id}/edit', [VerifikasiController::class, 'kompetisiEdit'])->name('kompetisi.edit');
+    //     Route::post('kompetisi/{id}/approve', [VerifikasiController::class, 'kompetisiApprove'])->name('kompetisi.approve');
+
+    //     // penghargaan
+    //     Route::get('_/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('penghargaan.show');
+    //     Route::get('_1/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('aplikom.show');
+    //     Route::get('_2/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('artikel.show');
+    //     Route::get('_3/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('buku.show');
+    //     Route::get('_4/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('desain_produk.show');
+    //     Route::get('_5/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('film.show');
+    // });
 
 
 

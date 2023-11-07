@@ -19,7 +19,8 @@
                             @foreach ($form['visibility'] as $v)
                                 @if (in_array($v, $allowedVisibility))
                                     @if ($form['type'] == 'text')
-                                        <x-input-text :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])" />
+                                        <x-input-text :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])"
+                                            :readonly="@$form['readonly']" />
                                     @elseif($form['type'] == 'select')
                                         <x-input-select :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])"
                                             :options="@$form['options']" />
