@@ -32,7 +32,7 @@ class PrestasiController extends Controller
             ];
         }
 
-        $data['records'] = $service->getListPrestasiView(3, $request->p, [], $filters);
+        $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
 
         return view('pages.index-list', $data);
     }
@@ -64,9 +64,25 @@ class PrestasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, PrestasiService $service)
     {
-        //
+        $data['records'] = $service->showPrestasi($id);
+        $data['details_column'] = [
+            ['column' => 'name', 'label' => 'Nama Prestasi'],
+            ['column' => 'kategori', 'label' => 'Tingkat'],
+            ['column' => 'organizer', 'label' => 'Instansi/Penyelenggara'],
+            ['column' => 'year', 'label' => 'Tahun'],
+            ['column' => 'desc', 'label' => 'Deskripsi'],
+        ];
+        $data['resource'] = self::RESOURCE;
+
+        return view('pages.detail-pres', $data);
+    }
+
+    public function detail(Request $request, PrestasiService $service)
+    {
+        $data = $service->showDetailPrestasi($request->id, $request->type);
+        return response()->json($data);
     }
 
     /**
@@ -75,9 +91,9 @@ class PrestasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $type, PrestasiService $service)
     {
-        //
+        dd($id, $type);
     }
 
     /**

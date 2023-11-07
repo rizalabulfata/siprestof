@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
+    const MHS = 'mahasiswa';
+    const DSN = 'dosen';
+
     use HasFactory, SoftDeletes;
 
     /**

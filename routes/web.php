@@ -33,20 +33,35 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\PrestasiController;
+use App\Http\Controllers\VerifikasiController;
 
 Route::get('/', function () {
     return redirect('/dashboard');
 })->middleware('auth');
 
-
+Route::get('/testview/{name}', function ($name) {
+    return view('pages.' . $name);
+});
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('dashboard', DashboardController::class);
     Route::resource('mahasiswa', MahasiswaController::class);
     Route::resource('portofolio', PortofolioController::class);
     Route::resource('prestasi', PrestasiController::class);
+    Route::prefix('verifikasi')->as('verifikasi.')->group(function () {
+        Route::get('/', [VerifikasiController::class, 'index'])->name('index');
 
-    Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
+        // kompetisi
+        Route::get('kompetisi', [VerifikasiController::class, 'kompetisiCreate'])->name('kompetisi.crete');
+        Route::get('kompetisi/{id}', [VerifikasiController::class, 'kompetisiShow'])->name('kompetisi.show');
+        Route::post('kompetisi/{id}', [VerifikasiController::class, 'kompetisiStore'])->name('kompetisi.store');
+        Route::get('kompetisi/{id}/edit', [VerifikasiController::class, 'kompetisiEdit'])->name('kompetisi.edit');
+        Route::post('kompetisi/{id}/approve', [VerifikasiController::class, 'kompetisiApprove'])->name('kompetisi.approve');
+    });
+
+
+
+    // Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
     // Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
     // Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     // Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
