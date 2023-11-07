@@ -182,7 +182,18 @@ class PrestasiService extends Service
      */
     public function showDetailPrestasi($id, $type)
     {
-        $record = DB::table($type)
+        $tables = [
+            'aplikom' => $this->table_hkaplikom,
+            'artikel' => $this->table_hkartikel,
+            'buku' => $this->table_hkbuku,
+            'desain_produk' => $this->table_hkdesainproduk,
+            'film' => $this->table_hkfilm,
+            'kompetisi' => $this->table_kompetisi,
+            'penghargaan' => $this->table_penghargaan,
+            'organisasi' => $this->table_organisasi
+        ];
+
+        $record = DB::table($tables[$type])
             ->where('id', '=', $id)
             ->first();
         return $record;

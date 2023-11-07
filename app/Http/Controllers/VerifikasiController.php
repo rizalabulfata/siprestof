@@ -82,7 +82,7 @@ class VerifikasiController extends Controller
      */
     public function show($id, VerifikasiService $service)
     {
-        $param = explode('_', $id);
+        $param = explode('__', $id);
         $data['title'] = 'Verifikasi CU ' . ucfirst($param[0]) . ' : Detail';
         $data['resource'] = self::RESOURCE;
         $data['records'] = $service->showDetailVerifikasi($param[1], $param[0]);
@@ -155,13 +155,6 @@ class VerifikasiController extends Controller
                 'visibility' => [self::RESOURCE . '.create',],
                 'readonly' => true,
             ],
-            [
-                'column' => 'desc',
-                'name' => 'Deskripsi',
-                'type' => 'text',
-                'visibility' => [self::RESOURCE . '.show'],
-                'readonly' => true,
-            ],
         ];
 
         $add = [];
@@ -202,6 +195,13 @@ class VerifikasiController extends Controller
                     'visibility' => [self::RESOURCE . '.show'],
                     'readonly' => true,
                 ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
             ];
         } elseif ($type == 'penghargaan') {
             $add = [
@@ -229,6 +229,206 @@ class VerifikasiController extends Controller
                 [
                     'column' => 'institution',
                     'name' => 'Institusi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'aplikom') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Bentuk Aplikom',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'url',
+                    'name' => 'Tautan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'artikel') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Judul',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'publisher',
+                    'name' => 'Penerbit',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'issue_at',
+                    'name' => 'Tanggal Terbit',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'url',
+                    'name' => 'Link Artikel',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'buku') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Judul Bukut',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'type',
+                    'name' => 'Jenis Buku',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'publisher',
+                    'name' => 'Penerbit',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'isbn',
+                    'name' => 'Nomor ISBN',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'page_total',
+                    'name' => 'Jumlah Halaman',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'desain_produk') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Bentuk Desain',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'film') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Judul',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'genre',
+                    'name' => 'Genre',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'date',
+                    'name' => 'Tanggal',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'url',
+                    'name' => 'Tautan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+            ];
+        } elseif ($type == 'organisasi') {
+            $add = [
+                [
+                    'column' => 'event',
+                    'name' => 'Nama Organisasi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'kod_second_name',
+                    'name' => 'Jabatan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'year_start',
+                    'name' => 'Masa Jabatan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                    'readonly' => true,
+                ],
+                [
+                    'column' => 'sk_number',
+                    'name' => 'SK Jabatan',
                     'type' => 'text',
                     'visibility' => [self::RESOURCE . '.show'],
                     'readonly' => true,

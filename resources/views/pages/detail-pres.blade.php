@@ -130,7 +130,7 @@
                 if (i.documentation) {
                     let box = document.getElementById('dokumentasiBox')
                     box.innerHTML = ""
-                    let certs = JSON.parse(i.certificate)
+                    let certs = JSON.parse(i.documentation)
                     certs.forEach(e => {
                         let file = e.name.split('.')
                         let extension = file[file.length - 1].toLowerCase();

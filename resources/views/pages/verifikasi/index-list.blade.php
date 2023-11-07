@@ -65,7 +65,7 @@
                                                 @endforeach
                                                 <td class="align-middle text-center">
 
-                                                    <a href="{{ route('verifikasi.show', $record->type . '_' . $record->event_id) }}"
+                                                    <a href="{{ route('verifikasi.show', $record->type . '__' . $record->event_id) }}"
                                                         class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                                                 </td>
                                             </tr>

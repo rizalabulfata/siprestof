@@ -14,6 +14,7 @@
             </div>
             <form class="p-3" method="POST" action="{{ route($resource . '.store') }}">
                 @csrf
+                <input type="hidden" id="typecu">
                 @isset($forms)
                     @foreach ($forms as $form)
                         @isset($form['visibility'])
@@ -45,7 +46,13 @@
                 <div class="form-group">
                     <a class="btn  btn-info" onclick="getDocumentVerif('{{ $records->id }}', '{{ $type }}')">
                         <i class="fas fa-folder-open"></i>
-                        <span class="ps-2">Lihat Bukti Sertifikat dan Dokumentasi</span>
+                        @if ($type == 'desain_produk')
+                            <span class="ps-2">Lihat Mockup Desain</span>
+                        @elseif($type == 'organisasi')
+                            <span class="ps-2">Lihat Sertifikat Organisasi</span>
+                        @else
+                            <span class="ps-2">Lihat Bukti Sertifikat dan Dokumentasi</span>
+                        @endif
                     </a>
                 </div>
                 <div class="text-end">
@@ -67,14 +74,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
                 </div>
                 <div class="modal-body">
-                    <div class="">
-                        <h4>Sertifikat</h4>
-                        <div id="sertifikatBox"></div>
-                    </div>
-                    <div class="pt-3">
-                        <h4>Dokumentasi</h4>
-                        <div id="dokumentasiBox"></div>
-                    </div>
+                    @if ($type == 'desain_produk')
+                        <div class="">
+                            <h4>Mockup</h4>
+                            <div id="mockupBox"></div>
+                        </div>
+                    @else
+                        <div class="">
+                            <h4>Sertifikat</h4>
+                            <div id="sertifikatBox"></div>
+                        </div>
+                        <div class="pt-3">
+                            <h4>Dokumentasi</h4>
+                            <div id="dokumentasiBox"></div>
+                        </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -91,6 +105,7 @@
             var data = call(id, type);
             data.then((i) => {
                 let imgExtension = ['jpg', 'jpeg', 'png']
+
                 if (i.certificate) {
                     let box = document.getElementById('sertifikatBox')
                     box.innerHTML = ""
@@ -124,7 +139,37 @@
                 if (i.documentation) {
                     let box = document.getElementById('dokumentasiBox')
                     box.innerHTML = ""
-                    let certs = JSON.parse(i.certificate)
+                    let certs = JSON.parse(i.documentation)
+                    certs.forEach(e => {
+                        let file = e.name.split('.')
+                        let extension = file[file.length - 1].toLowerCase();
+
+                        if (imgExtension.indexOf(extension) != -1) {
+                            let img = new Image();
+                            let url = '{{ asset('storage/fake') }}/' + e.name
+                            img.src = url
+                            img.classList.add('img-fluid');
+                            img.classList.add('pb-3');
+                            box.appendChild(img)
+                        } else if (extension == 'pdf') {
+                            let boxIframe = document.createElement('div')
+                            let iframe = document.createElement('iframe')
+                            let url = '{{ asset('storage/fake') }}/' + e.name
+                            iframe.src = url
+                            iframe.width = 800
+                            boxIframe.classList.add('img-fluid');
+                            boxIframe.classList.add('pb-3');
+                            boxIframe.appendChild(iframe)
+                            box.appendChild(boxIframe)
+                        }
+                    });
+
+                }
+
+                if (i.mockup) {
+                    let box = document.getElementById('mockupBox')
+                    box.innerHTML = ""
+                    let certs = JSON.parse(i.mockup)
                     certs.forEach(e => {
                         let file = e.name.split('.')
                         let extension = file[file.length - 1].toLowerCase();

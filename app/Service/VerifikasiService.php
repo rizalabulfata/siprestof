@@ -64,7 +64,8 @@ class VerifikasiService extends Service
             'desain_produk' => $this->table_hkdesainproduk,
             'film' => $this->table_hkfilm,
             'kompetisi' => $this->table_kompetisi,
-            'penghargaan' => $this->table_penghargaan
+            'penghargaan' => $this->table_penghargaan,
+            'organisasi' => $this->table_organisasi
         ];
         $columnName = [
             'aplikom' => 'bentuk_aplikom',
