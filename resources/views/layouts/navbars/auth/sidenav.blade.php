@@ -75,7 +75,7 @@
             </li>
             <li class="nav-item">
                 @php
-                    $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.kompetisi.show'];
+                    $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.show'];
                 @endphp
                 <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     href="{{ route('verifikasi.index') }}">
