@@ -48,6 +48,16 @@ class User extends Authenticatable
         'deleted_at' => 'datetime',
     ];
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class);
+    }
+
     /**
      * Always encrypt the password when it is updated.
      *

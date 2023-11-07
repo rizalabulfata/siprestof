@@ -6,4 +6,6 @@
         @yield('alter-content')
     </div>
     {{-- @include('layouts.footers.auth.footer') --}}
+
+    @yield('script')
 @endsection

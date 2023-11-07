@@ -30,6 +30,9 @@ class Service
     protected $table_hkfilm;
     protected $table_user;
 
+    const MHS_ROLE = 'mahasiswa';
+    const ADM_ROLE = 'dosen';
+
     public function __construct()
     {
         $this->table_kelas = (new Kelas())->getTable();

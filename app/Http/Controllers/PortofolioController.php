@@ -9,16 +9,23 @@ use Illuminate\Http\Request;
 
 class PortofolioController extends Controller
 {
+    const RESOURCE = 'portofolio';
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(PortofolioService $service)
+    public function index(Request $request, PortofolioService $service)
     {
+        $data['title'] = 'Portofolio';
+        $data['tables'] = $this->table();
+        $data['resource'] = self::RESOURCE;
+
         $conditions = ['approval_status' => Model::APPROVE];
-        $portofolio = $service->getListPortofolioView(10, [], $conditions);
-        dd($portofolio->toArray());
+        $data['records'] = $service->getListPortofolioView(5, $request->p, [], $conditions);
+        // dd($data['records']);
+
+        return view('pages.index-list', $data);
     }
 
     /**
@@ -89,5 +96,30 @@ class PortofolioController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Render table
+     * @return array
+     */
+    public function table(): array
+    {
+        return [
+            [
+                'column' => 'nim',
+                'name' => 'NIM',
+                'visibility' => [self::RESOURCE . '.index']
+            ],
+            [
+                'column' => 'name',
+                'name' => 'Nama',
+                'visibility' => [self::RESOURCE . '.index']
+            ],
+            [
+                'column' => 'total',
+                'name' => 'Jumlah Portofolio',
+                'visibility' => [self::RESOURCE . '.index']
+            ],
+        ];
     }
 }
