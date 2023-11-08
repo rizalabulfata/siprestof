@@ -44,7 +44,7 @@ class MahasiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(MahasiswaService $service)
     {
         $data['resource'] = self::RESOURCE;
         $options = [];
@@ -65,9 +65,13 @@ class MahasiswaController extends Controller
             'sma' => 'SMA/SMK/MA'
         ];
 
+        // unit (prodi)
+        $units = $service->getUnits()->pluck('name', 'id')->toArray();
+
         $data['forms'] = $this->table([
             'valid_date' => $options,
-            'last_edu' => $last_edu
+            'last_edu' => $last_edu,
+            'units' => $units
         ]);
         $data['title'] = 'Tambah Mahasiswa';
         return view('pages.form-list', $data);
@@ -122,7 +126,16 @@ class MahasiswaController extends Controller
     public function show($id, MahasiswaService $service)
     {
         try {
-            $data = $service->showMahasiswa($id);
+            $record = $service->showMahasiswa($id);
+            $tables = $this->table();
+            $data['forms'] = [];
+            $data['resource'] = self::RESOURCE;
+            $data['id'] = $id;
+            foreach ($tables as $col) {
+                $col['value'] = $record->{$col['column']};
+                $data['forms'][] = $col;
+            }
+            return view('pages.form-show', $data);
         } catch (Exception $e) {
             $data = $e->getMessage();
         }
@@ -137,7 +150,43 @@ class MahasiswaController extends Controller
     public function edit($id, MahasiswaService $service)
     {
         try {
-            $data = $service->showMahasiswa($id);
+            $record = $service->showMahasiswa($id);
+            $data['resource'] = self::RESOURCE;
+            $options = [];
+
+            // buat select tahun
+            $year = now()->format('Y');
+            $options[$year . '1'] = $year . ' - Ganjil';
+            $options[$year . '2'] = $year . ' - Genap';
+            for ($i = 1; $i <= 7; $i++) {
+                $options[now()->subYears($i)->format('Y') . '1'] = now()->subYears($i)->format('Y') . ' - Ganjil';
+                $options[now()->subYears($i)->format('Y') . '2'] = now()->subYears($i)->format('Y') . ' - Genap';
+            }
+
+            // select pendidikan terakhir 
+            $last_edu = [
+                'sd' => 'SD/MI',
+                'smp' => 'SMP/MTS',
+                'sma' => 'SMA/SMK/MA'
+            ];
+
+            // unit (prodi)
+            $units = $service->getUnits()->pluck('name', 'id')->toArray();
+
+            $forms = $this->table([
+                'valid_date' => $options,
+                'last_edu' => $last_edu,
+                'units' => $units
+            ]);
+
+            $data['forms'] = [];
+            foreach ($forms as $col) {
+                $col['value'] = $record->{$col['column']};
+                $data['forms'][] = $col;
+            }
+            $data['title'] = 'Edit Mahasiswa';
+            $data['id'] = $id;
+            return view('pages.form-list', $data);
         } catch (Exception $e) {
             $data = $e->getMessage();
         }
@@ -154,9 +203,17 @@ class MahasiswaController extends Controller
     {
         try {
             $data = $service->saveMahasiswa($request->all(), $id);
+            $code = self::SUCCESS;
+            $msg = 'Berhasil ubah data Mahasiswa : ' . $request->name;
+            $url = route(self::RESOURCE . '.index');
         } catch (Exception $e) {
             $data = $e->getMessage();
+            $code = self::ERROR;
+            $msg = $e->getMessage();
+            $url = route(self::RESOURCE . '.edit', $id);
         }
+
+        return redirect($url)->withInput($request->all())->with($code, $msg);
     }
 
     /**
@@ -169,9 +226,16 @@ class MahasiswaController extends Controller
     {
         try {
             $data = $service->deleteMahasiswa($id);
+            $code = self::SUCCESS;
+            $msg = 'Berhasil hapus data Mahasiswa';
+            $url = route(self::RESOURCE . '.index');
         } catch (Exception $e) {
             $data = $e->getMessage();
+            $code = self::ERROR;
+            $msg = $e->getMessage();
+            $url = route(self::RESOURCE . '.index');
         }
+        return redirect($url)->with($code, $msg);
     }
 
     /**
@@ -186,41 +250,46 @@ class MahasiswaController extends Controller
                 'name' => 'NIM',
                 'type' => 'text',
                 'required' => true,
-                'visibility' => [self::RESOURCE . '.index', self::RESOURCE . '.create'],
+                'visibility' => [
+                    self::RESOURCE . '.index', self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'
+                ],
             ],
             [
                 'column' => 'name',
                 'name' => 'Nama',
                 'type' => 'text',
                 'required' => true,
-                'visibility' => [self::RESOURCE . '.index', self::RESOURCE . '.create'],
+                'visibility' => [
+                    self::RESOURCE . '.index', self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'
+                ],
             ],
             [
-                'column' => 'address',
+                'column' => 'unit_id',
                 'name' => 'Alamat Lengkap',
-                'type' => 'text',
-                'visibility' => [self::RESOURCE . '.create',],
+                'type' => 'select',
+                'options' => $options['units'] ?? [],
+                'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
             ],
             [
                 'column' => 'email',
                 'name' => 'E-Mail',
                 'type' => 'email',
                 'required' => true,
-                'visibility' => [self::RESOURCE . '.create'],
+                'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
             ],
             [
 
                 'column' => 'no_hp',
                 'name' => 'Nomor HP',
                 'type' => 'number',
-                'visibility' => [self::RESOURCE . '.create'],
+                'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
             ],
             [
 
                 'column' => 'last_edu',
                 'name' => 'Pendidikan Terakhir',
                 'type' => 'select',
-                'visibility' => [self::RESOURCE . '.create'],
+                'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
                 'required' => true,
                 'options' => $options['last_edu'] ?? []
             ],
@@ -229,7 +298,7 @@ class MahasiswaController extends Controller
                 'column' => 'birth_date',
                 'name' => 'Tanggal Lahir',
                 'type' => 'date',
-                'visibility' => [self::RESOURCE . '.create'],
+                'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
             ],
             [
                 'column' => 'valid_date',
@@ -237,7 +306,7 @@ class MahasiswaController extends Controller
                 'type' => 'select',
                 'required' => true,
                 'options' => $options['valid_date'] ?? [],
-                'visibility' => [self::RESOURCE . '.index', self::RESOURCE . '.create'],
+                'visibility' => [self::RESOURCE . '.index', self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
             ],
         ];
     }

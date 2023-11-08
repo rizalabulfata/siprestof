@@ -28,7 +28,10 @@
                 <h6 class="ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-0">Master</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'mahasiswa.index' ? 'active' : '' }}"
+                @php
+                    $activeUrlVerifikasi = ['mahasiswa.index', 'mahasiswa.show'];
+                @endphp
+                <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     href="{{ route('mahasiswa.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -64,7 +67,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'portofolio.index' ? 'active' : '' }}"
+                @php
+                    $activeUrlVerifikasi = ['portofolio.index', 'portofolio.show'];
+                @endphp
+                <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     href="{{ route('portofolio.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

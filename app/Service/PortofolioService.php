@@ -82,13 +82,46 @@ class PortofolioService extends Service
      */
     public function showPortoflio($id)
     {
-        $model = DB::table($this->table_mahasiswa)
-            ->join($this->table_kompetisi, $this->table_kompetisi . '.mahasiswa_id', '=', $this->table_mahasiswa . '.id')
-            ->join($this->table_penghargaan, $this->table_penghargaan . '.mahasiswa_id', '=', $this->table_mahasiswa . '.id')
-            ->where($this->table_kompetisi . '.approval_status', '=', Model::APPROVE)
-            ->where($this->table_penghargaan . '.approval_status', '=', Model::APPROVE)
-            ->where($this->table_mahasiswa . '.id', '=', $id)->get();
-        return $model;
+        $table_kodifikasi = $this->table_kodifikasi;
+        $tables = [
+            'aplikom' => $this->table_hkaplikom,
+            'artikel' => $this->table_hkartikel,
+            'buku' => $this->table_hkbuku,
+            'desain_produk' => $this->table_hkdesainproduk,
+            'film' => $this->table_hkfilm,
+            'organisasi' => $this->table_organisasi
+        ];
+
+        $result = [];
+        foreach ($tables as $key => $table) {
+            $records = DB::table($this->table_mahasiswa)
+                ->join($table, $table . '.mahasiswa_id', '=', $this->table_mahasiswa . '.id')
+                ->join($table_kodifikasi, $table_kodifikasi . '.id', '=', $table . '.kodifikasi_id')
+                ->where($table . '.approval_status', '=', Model::APPROVE)
+                ->where($this->table_mahasiswa . '.id', '=', $id)
+                ->get([
+                    $this->table_kodifikasi . '.code as kod_code',
+                    $this->table_kodifikasi . '.second_name as kod_second_name',
+                    $this->table_kodifikasi . '.kategori as kod_kategori',
+                    $this->table_mahasiswa . '.nim as mhs_nim',
+                    $this->table_mahasiswa . '.name as mhs_name',
+                    $table . '.*'
+                ])->each(function ($item) use ($key) {
+                    $item->table_type = $key;
+                    $item->kod_code = $item->kod_code . str_pad($item->id, 5, 0, STR_PAD_LEFT);
+                });
+            if (!$records->isEmpty()) {
+                foreach ($records->toArray() as $data) {
+                    $result[] = (object)[
+                        'code' => $data->kod_code,
+                        'type' => $data->table_type,
+                        'details' => $data
+                    ];
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**

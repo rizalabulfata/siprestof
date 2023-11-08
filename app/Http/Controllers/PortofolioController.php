@@ -58,7 +58,9 @@ class PortofolioController extends Controller
     public function show($id, PortofolioService $service)
     {
         try {
-            $data = $service->showPortoflio($id);
+            $data['records'] = $service->showPortoflio($id);
+            $data['resource'] = self::RESOURCE;
+            return view('pages.portofolio.detail-pres', $data);
         } catch (Exception $e) {
             $data = $e->getMessage();
         }
