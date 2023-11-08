@@ -3,10 +3,12 @@
 namespace App\Service;
 
 use App\Models\Mahasiswa;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class MahasiswaService
 {
@@ -29,7 +31,7 @@ class MahasiswaService
      * ambil seluruh data mahasiswa untuk view list
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListMahasiswaView($n = 10, $p = null, $relations = [], $conditions = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListMahasiswaView($n = 10, $p = null, $relations = [], $conditions = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'desc'])
     {
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
@@ -113,5 +115,14 @@ class MahasiswaService
         $model->fill($data);
         $model->save();
         return $model;
+    }
+
+    /**
+     * Ambil filter Unit
+     * @return \App\Models\Unit
+     */
+    public function getUnits($level = 'prodi')
+    {
+        return Unit::where('level', '=', $level)->get();
     }
 }

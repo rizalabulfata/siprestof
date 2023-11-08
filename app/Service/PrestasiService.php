@@ -77,9 +77,9 @@ class PrestasiService extends Service
     }
 
     /**
-     * Tampilkan portoflio mahasiswa
+     * Tampilkan prestasi Mahasiswa
      * @param int $id
-     * @return \App\Models\Mahasiswa
+     * @return array
      */
     public function showPrestasi($id)
     {

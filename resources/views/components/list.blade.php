@@ -9,6 +9,7 @@
 <div class="row mt-4">
     <div class="col-12">
         <div class="card mb-4">
+            <x-alert :type="true" />
             <div class="card-header pb-0">
                 <h6>{{ $title }}</h6>
                 <a href="{{ route($resource . '.create') }}" class="btn btn-primary btn-xs"><i class="fas fa-plus"> </i>
@@ -53,12 +54,17 @@
                                             @endisset
                                         @endforeach
                                         <td class="align-middle text-center">
-                                            <a href="{{ route($resource . '.show', $record->id ?? $record['id']) }}"
-                                                class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
-                                            <a href="{{ route($resource . '.edit', $record->id ?? $record['id']) }}"
-                                                class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
-                                            <a href="{{ route($resource . '.destroy', $record->id ?? $record['id']) }}"
-                                                class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></a>
+                                            <form
+                                                action="{{ route($resource . '.destroy', $record->id ?? $record['id']) }}"
+                                                method="POST">
+                                                <a href="{{ route($resource . '.show', $record->id ?? $record['id']) }}"
+                                                    class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                                <a href="{{ route($resource . '.edit', $record->id ?? $record['id']) }}"
+                                                    class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm"><i
+                                                        class="far fa-trash-alt"></i></a>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
