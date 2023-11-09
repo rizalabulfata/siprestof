@@ -39,4 +39,33 @@ class DashboardService extends Service
             'portofolio' => $karyaCount
         ];
     }
+
+    /**
+     * Ambil summary data kompetisi spesifik mahasiswa
+     */
+    public function getSummaryMhs($id)
+    {
+
+        $status = [
+            'approveCount' => Model::APPROVE,
+            'pendingCount' => Model::PENDING,
+            'rejectCount' => Model::REJECT,
+        ];
+        $karya = [
+            $this->table_hkaplikom, $this->table_hkartikel, $this->table_hkbuku,
+            $this->table_hkdesainproduk, $this->table_hkfilm, $this->table_organisasi
+        ];
+
+        foreach ($status as $key => $s) {
+            $prestasi = DB::table($this->table_penghargaan)->where('mahasiswa_id', '=', $id)->where('approval_status', '=', $s)->count()
+                + DB::table($this->table_kompetisi)->where('mahasiswa_id', '=', $id)->where('approval_status', '=', $s)->count();
+            $karyaCount = 0;
+            foreach ($karya as $table) {
+                $karyaCount += DB::table($table)->where('mahasiswa_id', '=', $id)->where('approval_status', '=', $s)->count();
+            }
+            $statusCount[$key] = $prestasi + $karyaCount;
+        }
+
+        return $statusCount;
+    }
 }

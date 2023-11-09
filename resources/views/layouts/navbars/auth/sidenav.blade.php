@@ -32,12 +32,20 @@
                     $activeUrlVerifikasi = ['mahasiswa.index', 'mahasiswa.show'];
                 @endphp
                 <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
-                    href="{{ route('mahasiswa.index') }}">
+                    @can('isAdmin')
+                    href="{{ route('mahasiswa.index') }}"
+                    @else    
+                    href="{{ route('mahasiswa.show', auth()->user()->mahasiswa->id) }}"
+                    @endcan>
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Kelola Mahasiswa</span>
+                    @can('isAdmin')
+                        <span class="nav-link-text ms-1">Kelola Mahasiswa</span>
+                    @else
+                        <span class="nav-link-text ms-1">Profil</span>
+                    @endcan
                 </a>
             </li>
             {{-- <li class="nav-item">
@@ -55,7 +63,7 @@
             </li>
             <li class="nav-item">
                 @php
-                    $activeUrlVerifikasi = ['prestasi.index', 'prestasi.show'];
+                    $activeUrlVerifikasi = ['prestasi.index', 'prestasi.show', 'prestasi.create'];
                 @endphp
                 <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     href="{{ route('prestasi.index') }}">
@@ -68,7 +76,7 @@
             </li>
             <li class="nav-item">
                 @php
-                    $activeUrlVerifikasi = ['portofolio.index', 'portofolio.show'];
+                    $activeUrlVerifikasi = ['portofolio.index', 'portofolio.show', 'portofolio.create'];
                 @endphp
                 <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     href="{{ route('portofolio.index') }}">
@@ -79,19 +87,21 @@
                     <span class="nav-link-text ms-1">Portofolio Mahasiswa</span>
                 </a>
             </li>
-            <li class="nav-item">
-                @php
-                    $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.show'];
-                @endphp
-                <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
-                    href="{{ route('verifikasi.index') }}">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-app text-info text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Verifikasi CU</span>
-                </a>
-            </li>
+            @can('isAdmin')
+                <li class="nav-item">
+                    @php
+                        $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.show'];
+                    @endphp
+                    <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
+                        href="{{ route('verifikasi.index') }}">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="ni ni-app text-info text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Verifikasi CU</span>
+                    </a>
+                </li>
+            @endcan
             {{-- <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'rtl' ? 'active' : '' }}" href="{{ route('rtl') }}">
                     <div

@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class PortofolioService extends Service
 {
@@ -24,7 +25,7 @@ class PortofolioService extends Service
      * ambil seluruh data portofolio mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListPortofolioView($n = 10, $p = null, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListPortofolioView($n = 10, $p = null, $checkAuth = false, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
@@ -44,7 +45,14 @@ class PortofolioService extends Service
             $this->table_mahasiswa . '.name'
         ];
 
-        $mhs = DB::table($this->table_mahasiswa)->get($mhsColumn);
+        $mhs = DB::table($this->table_mahasiswa);
+        if ($checkAuth) {
+            $user = auth()->user();
+            if ($user->mahasiswa) {
+                $mhs->where('id', '=', $user->mahasiswa->id);
+            }
+        }
+        $mhs = $mhs->get($mhsColumn);
 
         $result = [];
         foreach ($mhs as $m) {
@@ -67,6 +75,14 @@ class PortofolioService extends Service
             }
             $result[$m->id]['total'] = count($result[$m->id]['data']);
         }
+
+        // jika user ambil data saja
+        if ($checkAuth && Gate::allows('isMahasiswa')) {
+            foreach ($result as $value) {
+                $result = $value['data'];
+            }
+        }
+
         $result = collect($result);
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [

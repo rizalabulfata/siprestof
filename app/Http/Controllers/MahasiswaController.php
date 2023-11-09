@@ -7,6 +7,7 @@ use App\Service\MahasiswaService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class MahasiswaController extends Controller
 {
@@ -20,6 +21,7 @@ class MahasiswaController extends Controller
      */
     public function index(Request $request, MahasiswaService $service)
     {
+        $this->authorize('isAdmin');
         $data['title'] = 'Mahasiswa';
         $columns = ['id', 'name', 'nim', 'active_kelas', 'unit_id', 'unit_name', 'valid_date'];
         $data['tables'] = $this->table();
@@ -125,6 +127,11 @@ class MahasiswaController extends Controller
      */
     public function show($id, MahasiswaService $service)
     {
+        if (Gate::allows('isMahasiswa')) {
+            if ($id != $this->getAuthActionId()) {
+                abort(403);
+            }
+        }
         try {
             $record = $service->showMahasiswa($id);
             $tables = $this->table();

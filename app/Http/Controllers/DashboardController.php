@@ -6,6 +6,7 @@ use App\Service\DashboardService;
 use App\Service\PortofolioService;
 use App\Service\PrestasiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardController extends Controller
 {
@@ -29,7 +30,11 @@ class DashboardController extends Controller
         $data['porto_total'] = $porto->count();
 
         // summary dashboard
-        $data['summary'] = $service->getSummary();
+        if (Gate::allows('isAdmin')) {
+            $data['summary'] = $service->getSummary();
+        } else {
+            $data['summary'] = $service->getSummaryMhs(auth()->user()->mahasiswa->id);
+        }
 
         return view('pages.dashboard', $data);
     }
