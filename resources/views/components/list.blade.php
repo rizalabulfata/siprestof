@@ -3,6 +3,7 @@
     'records' => [],
     'columns' => [],
     'resource' => null,
+    'buttons' => [],
     'allowedVisibility' => [Route::currentRouteName()],
 ])
 
@@ -12,8 +13,22 @@
             <x-alert :type="true" />
             <div class="card-header pb-0">
                 <h6>{{ $title }}</h6>
-                <a href="{{ route($resource . '.create') }}" class="btn btn-primary btn-xs"><i class="fas fa-plus"> </i>
-                    Tambah</a>
+                @can('isMahasiswa')
+                    @if (!empty($buttons))
+                        @foreach ($buttons as $button)
+                            <a href="{{ $button['url'] }}" class="{{ $button['class'] }}">
+                                @if (isset($button['icon']))
+                                    <i class="{{ $button['icon'] }}">
+                                    </i>
+                                @endif
+                                {{ @$button['text'] }}
+                            </a>
+                        @endforeach
+                    @else
+                        <a href="{{ route($resource . '.create') }}" class="btn btn-primary btn-xs"><i
+                                class="fas fa-plus"></i>Tambah</a>
+                    @endif
+                @endcan
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -54,15 +69,19 @@
                                             @endisset
                                         @endforeach
                                         <td class="align-middle text-center">
-                                            <form
-                                                action="{{ route($resource . '.destroy', $record->id ?? $record['id']) }}"
-                                                method="POST">
-                                                <a href="{{ route($resource . '.show', $record->id ?? $record['id']) }}"
-                                                    class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
-                                                <a href="{{ route($resource . '.edit', $record->id ?? $record['id']) }}"
-                                                    class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
+                                            @php
+                                                $id = $record->id ?? ($record['id'] ?? ($record->event_id ?? $record['event_id']));
+                                            @endphp
+                                            <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
+                                                <a href="{{ route($resource . '.show', $id) }}"
+                                                    class="btn btn-info btn-sm" data-toggle="tooltip"
+                                                    data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
+                                                <a href="{{ route($resource . '.edit', $id) }}"
+                                                    class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                    data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"><i
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    data-toggle="tooltip" data-placement="top" title="Hapus"><i
                                                         class="far fa-trash-alt"></i></a>
                                             </form>
                                         </td>

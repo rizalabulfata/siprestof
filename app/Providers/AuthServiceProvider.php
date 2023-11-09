@@ -23,8 +23,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $roles = [
+            'isAdmin' => 'dosen',
+            'isMahasiswa' => 'mahasiswa'
+        ];
+
         $this->registerPolicies();
 
-        //
+        foreach ($roles as $role => $code) {
+            Gate::define($role, function ($user) use ($code) {
+                return $user->role->code == $code;
+            });
+        }
     }
 }

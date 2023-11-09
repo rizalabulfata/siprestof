@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class PrestasiService extends Service
 {
@@ -42,7 +43,7 @@ class PrestasiService extends Service
         if ($checkAuth) {
             $user = auth()->user();
             if ($user->mahasiswa) {
-                $mhs->where('id', '=', $user->mahasiswa_id);
+                $mhs->where('id', '=', $user->mahasiswa->id);
             }
         }
         $mhs = $mhs->get($columns);
@@ -68,6 +69,14 @@ class PrestasiService extends Service
             }
             $result[$m->id]['total'] = count($result[$m->id]['data']);
         }
+
+        // jika user ambil data saja
+        if ($checkAuth && Gate::allows('isMahasiswa')) {
+            foreach ($result as $value) {
+                $result = $value['data'];
+            }
+        }
+
         $result = collect($result);
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [

@@ -16,8 +16,8 @@
             <span class="text-danger">*</span>
         @endif
     </label>
-    <input placeholder="{{ $placeholders }}" @if ($required) required @endif class="form-control"
-        type="textarea" value="{{ $value }}" name="{{ $name }}" id="{{ $id }}">
+    <textarea placeholder="{{ $placeholders }}" @if ($required) required @endif class="form-control"
+        value="{{ $value }}" name="{{ $name }}" id="{{ $id }}"></textarea>
     @error($name)
         <p class="text-danger text-xs pt-1"> {{ $message }} </p>
     @enderror

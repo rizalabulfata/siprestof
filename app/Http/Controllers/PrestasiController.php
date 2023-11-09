@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use App\Models\Model;
 use App\Service\PrestasiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PrestasiController extends Controller
 {
@@ -32,6 +33,21 @@ class PrestasiController extends Controller
             ];
         }
 
+        $data['buttons'] = [
+            [
+                'url' => route('prestasi.create', ['type' => 'kompetisi']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Kompetisi'
+            ],
+            [
+                'url' => route('prestasi.create', ['type' => 'penghargaan']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Penghargaan'
+            ],
+        ];
+
         $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
 
         return view('pages.index-list', $data);
@@ -42,9 +58,22 @@ class PrestasiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $data['resource'] =  self::RESOURCE;
+        $data['title'] =  'Tambah Data ' . ucfirst($request->type);
+        $optionsYears = [];
+
+        // select tahun
+        $optionsYears[now()->format('Y')] = now()->format('Y');
+        for ($i = 1; $i <= 8; $i++) {
+            $optionsYears[now()->subYears($i)->format('Y')] = now()->subYears($i)->format('Y');
+        }
+
+        $data['forms'] = $this->kolomCreate($request->type, [
+            'year' => $optionsYears
+        ]);
+        return view('pages.form-list', $data);
     }
 
     /**
@@ -125,7 +154,7 @@ class PrestasiController extends Controller
      */
     public function table(): array
     {
-        return [
+        $table = [
             [
                 'column' => 'nim',
                 'name' => 'NIM',
@@ -142,5 +171,109 @@ class PrestasiController extends Controller
                 'visibility' => [self::RESOURCE . '.index']
             ],
         ];
+
+        if (Gate::allows('isMahasiswa')) {
+            $table = [
+                [
+                    'column' => 'event_name',
+                    'name' => 'Nama Prestasi',
+                    'visibility' => [self::RESOURCE . '.index']
+                ],
+                [
+                    'column' => 'type',
+                    'name' => 'Jenis',
+                    'visibility' => [self::RESOURCE . '.index']
+                ],
+            ];
+        }
+
+        return $table;
+    }
+
+    /**
+     * Kolom untuk form create
+     */
+    public function kolomCreate($type, $options = [])
+    {
+        $add = [];
+        if ($type == 'kompetisi') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'name' => 'Nama Kompetisi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create',],
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'textarea',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'type',
+                    'name' => 'Individu/Tim',
+                    'type' => 'select',
+                    'options' => ['tim' => 'Tim/Kelompok', 'individu' => 'Individu'],
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'organizer',
+                    'name' => 'Penyelenggara',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'select',
+                    'options' => $options['year'] ?? [],
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'kod_kategori',
+                    'name' => 'Kategori',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+
+            ];
+        } elseif ($type == 'penghargaan') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'name' => 'Penghargaan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'textarea',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'institution',
+                    'name' => 'Institusi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'date',
+                    'name' => 'Tanggal',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'kod_kategori',
+                    'name' => 'Tingkat',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+
+            ];
+        }
+
+        return $add;
     }
 }

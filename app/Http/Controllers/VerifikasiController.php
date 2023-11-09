@@ -164,7 +164,7 @@ class VerifikasiController extends Controller
                     'column' => 'event',
                     'name' => 'Nama Kompetisi',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create',],
+                    'visibility' => [self::RESOURCE . '.show',],
                     'readonly' => true,
                 ],
                 [
