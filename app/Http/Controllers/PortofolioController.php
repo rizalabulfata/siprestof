@@ -27,6 +27,30 @@ class PortofolioController extends Controller
 
         $data['buttons'] = [
             [
+                'url' => route('prestasi.create', ['type' => 'kompetisi']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Kompetisi'
+            ],
+            [
+                'url' => route('prestasi.create', ['type' => 'penghargaan']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Penghargaan'
+            ],
+            [
+                'url' => route('portofolio.create', ['type' => 'organisasi']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Organisasi'
+            ],
+            [
+                'url' => route('portofolio.create', ['type' => 'buku']),
+                'class' => 'btn btn-outline-success',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah Buku'
+            ],
+            [
                 'url' => route('portofolio.create', ['type' => 'aplikom']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
@@ -56,12 +80,7 @@ class PortofolioController extends Controller
                 'icon' => 'fas fa-plus',
                 'text' => 'Tambah Film'
             ],
-            [
-                'url' => route('portofolio.create', ['type' => 'organisasi']),
-                'class' => 'btn btn-outline-success',
-                'icon' => 'fas fa-plus',
-                'text' => 'Tambah Organisasi'
-            ],
+            
         ];
 
         return view('pages.index-list', $data);
