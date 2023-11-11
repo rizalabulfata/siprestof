@@ -61,7 +61,15 @@
                                                     @if (in_array($v, $allowedVisibility))
                                                         <td class="align-middle text-center text-sm">
                                                             <p class="text-sm font-weight-bold mb-0">
-                                                                {{ $record->{$column['column']} ?? $record[$column['column']] }}
+                                                                @if ($column['column'] == 'type')
+                                                                    @php
+                                                                        $value = $record->{$column['column']} ?? $record[$column['column']];
+                                                                        $value = ucfirst(str_replace('_', ' ', $value));
+                                                                    @endphp
+                                                                    {{ $value }}
+                                                                @else
+                                                                    {{ $record->{$column['column']} ?? $record[$column['column']] }}
+                                                                @endif
                                                             </p>
                                                         </td>
                                                     @endif
@@ -71,19 +79,40 @@
                                         <td class="align-middle text-center">
                                             @php
                                                 $id = $record->id ?? ($record['id'] ?? ($record->event_id ?? $record['event_id']));
+                                                $portoApprove = ['aplikom', 'artikel', 'buku', 'desain_produk', 'film', 'kompetisi', 'penghargaan', 'organisasi'];
                                             @endphp
-                                            <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
-                                                <a href="{{ route($resource . '.show', $id) }}"
-                                                    class="btn btn-info btn-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
-                                                <a href="{{ route($resource . '.edit', $id) }}"
-                                                    class="btn btn-warning btn-sm" data-toggle="tooltip"
-                                                    data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    data-toggle="tooltip" data-placement="top" title="Hapus"><i
-                                                        class="far fa-trash-alt"></i></a>
-                                            </form>
+                                            @can('isAdmin')
+                                                <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
+                                                    <a href="{{ route($resource . '.show', $id) }}"
+                                                        class="btn btn-info btn-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
+                                                    <a href="{{ route($resource . '.edit', $id) }}"
+                                                        class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                            class="far fa-trash-alt"></i></a>
+                                                </form>
+                                            @else
+                                                <form
+                                                    action="{{ route($resource . '.destroy', $id . '__' . $record['type']) }}"
+                                                    method="POST">
+                                                    <a href="{{ route($resource . '.show', $id . '__' . $record['type']) }}"
+                                                        class="btn btn-info btn-sm" data-toggle="tooltip"
+                                                        data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
+                                                    @if (!in_array($record->type ?? $record['type'], $portoApprove))
+                                                        <a href="{{ route($resource . '.edit', $id . '__' . $record['type']) }}"
+                                                            class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Edit"><i
+                                                                class="fas fa-pen"></i></a>
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                                class="far fa-trash-alt"></i></a>
+                                                    @endif
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

@@ -31,12 +31,12 @@ class KompetisiFactory extends Factory
             'organizer' => fake()->company,
             'year' => fake()->numberBetween(2010, 2020),
             'documentation' => json_encode([
-                ['name' => 'certificate.jpg'],
-                ['name' => 'dummy.pdf']
+                ['name' => 'fake/certificate.jpg'],
+                ['name' => 'fake/dummy.pdf']
             ]),
             'certificate' => json_encode([
-                ['name' => 'certificate.jpg'],
-                ['name' => 'dummy.pdf']
+                ['name' => 'fake/certificate.jpg'],
+                ['name' => 'fake/dummy.pdf']
             ])
         ];
     }

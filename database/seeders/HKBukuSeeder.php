@@ -22,7 +22,7 @@ class HKBukuSeeder extends Seeder
         $kodifikasi = Kodifikasi::where('bidang', '=', 'karya')->get(['id'])->toArray();
         $kodifikasi = array_column($kodifikasi, 'id');
 
-        $type = ['fiksi', 'ilmiah', 'sci-fi', 'horro', 'science', 'pendidikan', 'informatika'];
+        $type = ['fiksi', 'ilmiah', 'sci-fi', 'horror', 'science', 'pendidikan', 'informatika'];
         $status = ['pending', 'approve', 'reject'];
 
         for ($i = 0; $i < 20; $i++) {
@@ -30,14 +30,14 @@ class HKBukuSeeder extends Seeder
                 'kodifikasi_id' => fake()->randomElement($kodifikasi),
                 'mahasiswa_id' => fake()->randomElement($mahasiswas),
                 'name' => 'Buku ' . fake()->words(4, true),
-                'type' => fake()->randomElement($type),
+                'category' => fake()->randomElement($type),
                 'publisher' => fake()->company,
                 'isbn' => fake()->uuid,
                 'page_total' => fake()->numberBetween(50, 300),
                 'year' => fake()->numberBetween(2010, 2020),
                 'documentation' => json_encode([
-                    ['name' => 'certificate.jpg'],
-                    ['name' => 'dummy.pdf']
+                    ['name' => 'fake/certificate.jpg'],
+                    ['name' => 'fake/dummy.pdf']
                 ]),
                 'approval_status' => fake()->randomElement($status)
             ]);

@@ -30,6 +30,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card mb-4">
+                    <x-alert :type="true" />
                     <div class="card-header pb-0">
                         <h6>{{ $title }}</h6>
                         <div class="card-body px-0 pt-0 pb-2">
@@ -65,8 +66,20 @@
                                                 @endforeach
                                                 <td class="align-middle text-center">
 
+                                                    <form
+                                                        action="{{ route($resource . '.destroy', $record->event_id . '__' . $record->type) }}"
+                                                        method="POST"></form>
                                                     <a href="{{ route('verifikasi.show', $record->type . '__' . $record->event_id) }}"
                                                         class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                                    @can('isMahasiswa')
+                                                        <a href="{{ route($resource . '.edit', $record->event_id . '__' . $record->type) }}"
+                                                            class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                                class="far fa-trash-alt"></i></a>
+                                                        @endcan
                                                 </td>
                                             </tr>
                                         @endforeach

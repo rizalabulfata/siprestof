@@ -10,12 +10,6 @@
     'readonly' => false,
     'placeholders' => null,
 ])
-@php
-    if ($value) {
-        $value = Carbon\Carbon::parse($value)->format('Y-m-d');
-    }
-@endphp
-
 <div class="form-group">
     <label for="{{ $id }}" class="form-control-label">
         {{ $label }}
@@ -24,8 +18,8 @@
         @endif
     </label>
     <input placeholder="{{ $placeholders }}" @if ($required) required @endif class="form-control"
-        type="date" value="{{ $value }}" name="{{ $name }}" id="{{ $id }}"
-        @if ($readonly) readonly @endif>
+        type="file" name="{{ $name }}[]" id="{{ $id }}"
+        @if ($readonly) readonly @endif multiple>
     @error($name)
         <p class="text-danger text-xs pt-1"> {{ $message }} </p>
     @enderror

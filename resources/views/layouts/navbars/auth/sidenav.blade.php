@@ -87,21 +87,25 @@
                     <span class="nav-link-text ms-1">Portofolio Mahasiswa</span>
                 </a>
             </li>
-            @can('isAdmin')
-                <li class="nav-item">
-                    @php
-                        $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.show'];
-                    @endphp
-                    <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
-                        href="{{ route('verifikasi.index') }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-app text-info text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Verifikasi CU</span>
-                    </a>
-                </li>
-            @endcan
+            <li class="nav-item">
+                @php
+                    $activeUrlVerifikasi = ['verifikasi.index', 'verifikasi.show', 'verifikasi.edit'];
+                @endphp
+                <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
+                    href="{{ route('verifikasi.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-app text-info text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">
+                        @can('isAdmin')
+                            Verifikasi CU
+                        @else
+                            Pengajuan CU
+                        @endcan
+                    </span>
+                </a>
+            </li>
             {{-- <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'rtl' ? 'active' : '' }}" href="{{ route('rtl') }}">
                     <div

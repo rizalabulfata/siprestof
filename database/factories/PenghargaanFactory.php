@@ -23,8 +23,8 @@ class PenghargaanFactory extends Factory
             'institution' => fake()->company,
             'date' => fake()->date(),
             'certificate' => json_encode([
-                ['name' => 'certificate.jpg'],
-                ['name' => 'dummy.pdf']
+                ['name' => 'fake/certificate.jpg'],
+                ['name' => 'fake/dummy.pdf']
             ])
         ];
     }

@@ -24,7 +24,7 @@ class CreateHkBukuTable extends Migration
             $table->foreignId('kodifikasi_id')->references('id')->on('kodifikasi')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('mahasiswa_id')->references('id')->on('mahasiswa')->restrictOnDelete()->cascadeOnUpdate();
             $table->string('name');
-            $table->string('type')->nullable();
+            $table->string('category')->nullable();
             $table->string('publisher')->nullable();
             $table->string('isbn')->nullable();
             $table->integer('page_total')->nullable();

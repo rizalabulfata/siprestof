@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Model;
 use App\Service\PortofolioService;
+use App\Service\VerifikasiService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -27,13 +28,13 @@ class PortofolioController extends Controller
 
         $data['buttons'] = [
             [
-                'url' => route('prestasi.create', ['type' => 'kompetisi']),
+                'url' => route('portofolio.create', ['type' => 'kompetisi']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
                 'text' => 'Tambah Kompetisi'
             ],
             [
-                'url' => route('prestasi.create', ['type' => 'penghargaan']),
+                'url' => route('portofolio.create', ['type' => 'penghargaan']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
                 'text' => 'Tambah Penghargaan'
@@ -63,13 +64,7 @@ class PortofolioController extends Controller
                 'text' => 'Tambah Artikel'
             ],
             [
-                'url' => route('portofolio.create', ['type' => 'buku']),
-                'class' => 'btn btn-outline-success',
-                'icon' => 'fas fa-plus',
-                'text' => 'Tambah Buku'
-            ],
-            [
-                'url' => route('portofolio.create', ['type' => 'desain']),
+                'url' => route('portofolio.create', ['type' => 'desain_produk']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
                 'text' => 'Tambah Desain Produk'
@@ -80,7 +75,7 @@ class PortofolioController extends Controller
                 'icon' => 'fas fa-plus',
                 'text' => 'Tambah Film'
             ],
-            
+
         ];
 
         return view('pages.index-list', $data);
@@ -91,10 +86,12 @@ class PortofolioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(Request $request, PortofolioService $service)
     {
+        $this->authorize('isMahasiswa');
         $data['resource'] =  self::RESOURCE;
         $data['title'] =  'Tambah Data ' . ucfirst($request->type);
+        $type = $request->type;
         $optionsYears = [];
 
         // select tahun
@@ -102,10 +99,39 @@ class PortofolioController extends Controller
         for ($i = 1; $i <= 8; $i++) {
             $optionsYears[now()->subYears($i)->format('Y')] = now()->subYears($i)->format('Y');
         }
+        // select buku
+        $bookType = ['fiksi' => 'Fiksi', 'ilmiah' => 'Ilmiah', 'sci-fi' => 'Sci-Fi', 'horror' => 'Horror', 'science' => 'Science', 'pendidikan' => 'Keilmuan/Pendidikan', 'informatika' => 'Teknologi Informatika'];
 
-        $data['forms'] = $this->kolomCreate($request->type, [
-            'year' => $optionsYears
-        ]);
+        // genre film
+        $filmGenre = ['fiksi' => 'Fiksi', 'comedy' => 'Komedi/Lawak', 'sci-fi' => 'Fantasi', 'horror' => 'Horor', 'science' => 'Pengetahuan', 'biography' => 'Biografi Tokoh', 'history' => 'Sejarah'];
+
+        $kodifikasi = $service->getKodifikasi($type);
+        if ($type == 'organisasi') {
+            $kodifikasi = $kodifikasi->pluck('second_name', 'bidang')->toArray();
+            $forms = $this->kolomForm($request->type, [
+                'year' => $optionsYears,
+                'jabatan' => $kodifikasi,
+                'kategori' => []
+            ]);
+        } else {
+            $kategori = $kodifikasi->each(function ($item) {
+                $item->kategori = ucfirst($item->kategori);
+            })->pluck('kategori', 'id');
+            $forms = $this->kolomForm($request->type, [
+                'year' => $optionsYears,
+                'kategori' => $kategori,
+                'booktypes' => $bookType,
+                'filmGenre' => $filmGenre
+            ]);
+        }
+        $forms[] = [
+            'column' => 'type',
+            'type' => 'hidden',
+            'value' => $request->type,
+            'visibility' => [self::RESOURCE . '.create']
+        ];
+        $data['forms'] = $forms;
+
         return view('pages.form-list', $data);
     }
 
@@ -115,9 +141,23 @@ class PortofolioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, PortofolioService $service)
     {
-        //
+        $this->authorize('isMahasiswa');
+        try {
+            $data = $request->except('type');
+            $data['mahasiswa_id'] = $this->getAuthActionId();
+            $service->savePortofolio($data, $request->type);
+
+            $code = self::SUCCESS;
+            $msg = 'Berhasil tambah portofolio (' . $request->type . '), Menunggu approval dari Admin';
+            $url = route(self::RESOURCE . '.index');
+        } catch (Exception $e) {
+            $code = self::ERROR;
+            $msg = 'Gagal tambah portofolio (' . $request->type . ') : ' . $e->getMessage();
+            $url = route(self::RESOURCE . '.create', ['type' => $request->type]);
+        }
+        return redirect($url)->withInput($request->all())->with($code, $msg);
     }
 
     /**
@@ -129,11 +169,40 @@ class PortofolioController extends Controller
     public function show($id, PortofolioService $service)
     {
         try {
-            $data['records'] = $service->showPortoflio($id);
             $data['resource'] = self::RESOURCE;
-            return view('pages.portofolio.detail-pres', $data);
+
+            // select tahun
+            $optionsYears[now()->format('Y')] = now()->format('Y');
+            for ($i = 1; $i <= 8; $i++) {
+                $optionsYears[now()->subYears($i)->format('Y')] = now()->subYears($i)->format('Y');
+            }
+
+            if (Gate::allows('isAdmin')) {
+                $data['records'] = $service->showPortoflio($id);
+                return view('pages.portofolio.detail-pres', $data);
+            } else {
+                $param = explode('__', $id);
+                $verifService = new VerifikasiService();
+                $data['records'] = $verifService->showDetailVerifikasi($param[0], $param[1]);
+                $forms = $this->kolomForm($param[1], [
+                    'year' => $optionsYears
+                ]);
+                $newForms = [];
+
+                // penyesuaian form
+                foreach ($forms as $key => $form) {
+                    $form['value'] = $data['records']->{$form['column']};
+                    $form['readonly'] = true;
+                    $newForms[] = $form;
+                }
+
+                $data['forms'] = $newForms;
+                $data['type'] = $param[1];
+                return view('pages.form-portofolio-detail', $data);
+            }
         } catch (Exception $e) {
             $data = $e->getMessage();
+            return redirect(route('portofolio.index'))->with('error', $data);
         }
     }
 
@@ -143,9 +212,70 @@ class PortofolioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id, PortofolioService $service)
     {
-        //
+        try {
+            $data['resource'] = self::RESOURCE;
+            $param = explode('__', $id);
+            $verifController = new VerifikasiController();
+
+            // select tahun
+            $optionsYears[now()->format('Y')] = now()->format('Y');
+            for ($i = 1; $i <= 8; $i++) {
+                $optionsYears[now()->subYears($i)->format('Y')] = now()->subYears($i)->format('Y');
+            }
+            // select buku
+            $bookType = ['fiksi' => 'Fiksi', 'ilmiah' => 'Ilmiah', 'sci-fi' => 'Sci-Fi', 'horror' => 'Horror', 'science' => 'Science', 'pendidikan' => 'Keilmuan/Pendidikan', 'informatika' => 'Teknologi Informatika'];
+
+            // genre film
+            $filmGenre = ['fiksi' => 'Fiksi', 'comedy' => 'Komedi/Lawak', 'sci-fi' => 'Fantasi', 'horror' => 'Horor', 'science' => 'Pengetahuan', 'biography' => 'Biografi Tokoh', 'history' => 'Sejarah'];
+
+
+            // kodifikasi
+            $kodifikasi = $service->getKodifikasi($param[1]);
+            if ($param[1] == 'organisasi') {
+                $kodifikasi = $kodifikasi->pluck('second_name', 'bidang')->toArray();
+                $forms = $this->kolomForm($param[1], [
+                    'year' => $optionsYears,
+                    'jabatan' => $kodifikasi,
+                    'kategori' => []
+                ]);
+            } else {
+                $kategori = $kodifikasi->each(function ($item) {
+                    $item->kategori = ucfirst($item->kategori);
+                })->pluck('kategori', 'id');
+                $forms = $this->kolomForm($param[1], [
+                    'year' => $optionsYears,
+                    'kategori' => $kategori,
+                    'booktypes' => $bookType,
+                    'filmGenre' => $filmGenre
+                ]);
+            }
+
+            $verifService = new VerifikasiService();
+            $data['records'] = $verifService->showDetailVerifikasi($param[0], $param[1]);
+            $newForms = [];
+
+            // penyesuaian form
+            foreach ($forms as $key => $form) {
+                $form['value'] = $data['records']->{$form['column']};
+                $visibility = $form['visibility'];
+                $url  = self::RESOURCE . '.create';
+                if (in_array($url, $visibility)) {
+                    $visibility[] = $verifController::RESOURCE . '.edit';
+                }
+                $form['visibility'] = $visibility;
+
+                $newForms[] = $form;
+            }
+
+            $data['forms'] = $newForms;
+            $data['type'] = $param[1];
+            return view('pages.form-portofolio-detail', $data);
+        } catch (Exception $e) {
+            $data = $e->getMessage();
+            return redirect(route('portofolio.index'))->with('error', $data);
+        }
     }
 
     /**
@@ -169,6 +299,14 @@ class PortofolioController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getKodifikasi(Request $request, PortofolioService $service)
+    {
+        $data = $service->getKodifikasi($request->type)->each(function ($item) {
+            $item->kategori = ucfirst($item->kategori);
+        })->pluck('kategori', 'id');
+        return $data;
     }
 
     /**
@@ -213,10 +351,37 @@ class PortofolioController extends Controller
         return $table;
     }
 
+    // public function buttonAction()
+    // {
+    //     $buttons = [
+    //         'Lihat' => [
+    //             'url' => route(self::RESOURCE . '.show'),
+    //             'icon' => '',
+    //             'text' => '',
+    //             'class' => '',
+    //             'type' => ''
+    //         ],
+    //         'Edit' => [
+    //             'url' => '',
+    //             'icon' => '',
+    //             'text' => '',
+    //             'class' => '',
+    //             'type' => ''
+    //         ],
+    //         'Delete' => [
+    //             'url' => '',
+    //             'icon' => '',
+    //             'text' => '',
+    //             'class' => '',
+    //             'type' => ''
+    //         ]
+    //     ];
+    // }
+
     /**
      * Kolom untuk form create
      */
-    public function kolomCreate($type, $options = [])
+    public function kolomForm($type, $options = [])
     {
         $add = [];
         if ($type == 'aplikom') {
@@ -225,25 +390,36 @@ class PortofolioController extends Controller
                     'column' => 'bentuk_aplikom',
                     'name' => 'Bentuk Aplikom',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
-                ],
-                [
-                    'column' => 'year',
-                    'name' => 'Tahun',
-                    'type' => 'select',
-                    'options' => $options['year'] ?? [],
-                    'visibility' => [self::RESOURCE . '.create'],
-                ],
-                [
-                    'column' => 'url',
-                    'name' => 'Tautan',
-                    'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],
                 ],
                 [
                     'column' => 'desc',
                     'name' => 'Deskripsi',
                     'type' => 'textarea',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => $options['year'] ?? [],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'url',
+                    'name' => 'Tautan',
+                    'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Kategori',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];
@@ -253,24 +429,35 @@ class PortofolioController extends Controller
                     'column' => 'name',
                     'name' => 'Judul',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'publisher',
                     'name' => 'Penerbit',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'issue_at',
                     'name' => 'Tanggal Terbit',
                     'type' => 'date',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'url',
                     'name' => 'Link Artikel',
                     'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Kategori',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];
@@ -278,55 +465,91 @@ class PortofolioController extends Controller
             $add = [
                 [
                     'column' => 'name',
-                    'name' => 'Judul Bukut',
+                    'name' => 'Judul Buku',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
-                    'column' => 'type',
+                    'column' => 'category',
                     'name' => 'Jenis Buku',
-                    'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => $options['booktypes'] ?? [],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'publisher',
                     'name' => 'Penerbit',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'isbn',
                     'name' => 'Nomor ISBN',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'page_total',
                     'name' => 'Jumlah Halaman',
                     'type' => 'number',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'year',
                     'name' => 'Tahun',
                     'type' => 'select',
                     'options' => $options['year'] ?? [],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Tingkat',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'documentation',
+                    'name' => 'Bukti',
+                    'type' => 'file',
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];
-        } elseif ($type == 'desain') {
+        } elseif ($type == 'desain_produk') {
             $add = [
                 [
                     'column' => 'bentuk_desain',
                     'name' => 'Bentuk Desain',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'year',
                     'name' => 'Tahun',
                     'type' => 'select',
                     'options' => $options['year'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Tingkat',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'mockup',
+                    'name' => 'Mockup Desain',
+                    'type' => 'file',
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];
@@ -336,30 +559,43 @@ class PortofolioController extends Controller
                     'column' => 'name',
                     'name' => 'Judul',
                     'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'genre',
                     'name' => 'Genre',
-                    'type' => 'text',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'type' => 'select',
+                    'options' => $options['filmGenre'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'desc',
                     'name' => 'Deskripsi',
                     'type' => 'textarea',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'date',
                     'name' => 'Tanggal',
                     'type' => 'date',
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'url',
                     'name' => 'Tautan',
                     'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Tingkat',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];
@@ -369,25 +605,165 @@ class PortofolioController extends Controller
                     'column' => 'name',
                     'name' => 'Nama Organisasi',
                     'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kod_second_name',
+                    'name' => 'Jabatan',
+                    'type' => 'select',
+                    'options' => $options['jabatan'] ?? [],
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
                 [
                     'column' => 'kod_second_name',
                     'name' => 'Jabatan',
                     'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Kategori',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
                 [
                     'column' => 'year_start',
-                    'name' => 'Masa Jabatan',
+                    'name' => 'Masa Jabatan : Awal',
                     'type' => 'text',
                     'options' => $options['year'] ?? [],
-                    'visibility' => [self::RESOURCE . '.create'],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'year_end',
+                    'name' => 'Masa Jabatan : Akhir',
+                    'type' => 'text',
+                    'options' => $options['year'] ?? [],
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
                 ],
                 [
                     'column' => 'sk_number',
                     'name' => 'SK Jabatan',
                     'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'certificate',
+                    'name' => 'Sertifikat',
+                    'type' => 'file',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+            ];
+        } elseif ($type == 'kompetisi') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'name' => 'Nama Kompetisi',
+                    'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kod_kategori',
+                    'name' => 'Kategori',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'textarea',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                // [
+                //     'column' => 'type',
+                //     'name' => 'Tim/Individu',
+                //     'type' => 'select',
+                //     'options' => ['tim' => 'Tim', 'individu' => 'Individu'],
+                //     'required' => true,
+                //     'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                // ],
+                [
+                    'column' => 'organizer',
+                    'name' => 'Penyelenggara',
+                    'type' => 'text',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'year',
+                    'name' => 'Tahun',
+                    'type' => 'select',
+                    'options' => $options['year'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Kategori',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'documentation',
+                    'name' => 'Dokumentasi Kompetisi',
+                    'type' => 'file',
+                    'required' => false,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'certificate',
+                    'name' => 'Bukti Sertifikat',
+                    'type' => 'file',
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+            ];
+        } elseif ($type == 'penghargaan') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'name' => 'Penghargaan',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'desc',
+                    'name' => 'Deskripsi',
+                    'type' => 'textarea',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'institution',
+                    'name' => 'Institusi',
+                    'type' => 'text',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'date',
+                    'name' => 'Tanggal',
+                    'type' => 'date',
+                    'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show'],
+                ],
+                [
+                    'column' => 'kodifikasi_id',
+                    'name' => 'Tingkat',
+                    'type' => 'select',
+                    'options' => $options['kategori'] ?? [],
+                    'required' => true,
+                    'visibility' => [self::RESOURCE . '.create'],
+                ],
+                [
+                    'column' => 'certificate',
+                    'name' => 'Bukti Sertifikat',
+                    'type' => 'file',
+                    'required' => true,
                     'visibility' => [self::RESOURCE . '.create'],
                 ],
             ];

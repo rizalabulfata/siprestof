@@ -30,8 +30,8 @@ class HKDesainProdukSeeder extends Seeder
                 'bentuk_desain' => fake()->words(10, true),
                 'year' => fake()->numberBetween(2010, 2020),
                 'mockup' => json_encode([
-                    ['name' => 'certificate.jpg'],
-                    ['name' => 'dummy.pdf']
+                    ['name' => 'fake/certificate.jpg'],
+                    ['name' => 'fake/dummy.pdf']
                 ]),
                 'approval_status' => fake()->randomElement($status)
             ]);

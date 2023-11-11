@@ -11,7 +11,7 @@
                                 <div class="numbers">
                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ $title }}</p>
                                     <h5 class="font-weight-bolder">
-                                        {{ $records->total() }}
+                                        {{ $records->total() ?? 0 }}
                                     </h5>
                                 </div>
                             </div>

@@ -18,10 +18,10 @@ class DashboardController extends Controller
     public function index(DashboardService $service)
     {
         // ambil pending prestasi
-        $prestasiService = new PrestasiService();
-        $prestasi = $prestasiService->getPendingPrestasi();
-        $data['prestasi'] = $prestasi;
-        $data['prestasi_total'] = $prestasi->count();
+        // $prestasiService = new PrestasiService();
+        // $prestasi = $prestasiService->getPendingPrestasi();
+        // $data['prestasi'] = $prestasi;
+        // $data['prestasi_total'] = $prestasi->count();
 
         // ambil pending portofolio
         $portoService = new PortofolioService();

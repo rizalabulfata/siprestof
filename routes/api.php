@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\PrestasiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,4 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post('/prestasi/detail', [PrestasiController::class, 'detail'])->name('api.prestasi.detail');
+Route::post('/kodifikasi-type', [PortofolioController::class, 'getKodifikasi'])->name('api.kodifikasi');

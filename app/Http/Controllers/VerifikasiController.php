@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Model;
+use App\Service\PortofolioService;
 use App\Service\VerifikasiService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class VerifikasiController extends Controller
 {
@@ -15,7 +20,7 @@ class VerifikasiController extends Controller
      */
     public function index(Request $request, VerifikasiService $service)
     {
-        $data['title'] = 'Verifikasi Capaian Unggulan';
+        $data['title'] = (Gate::allows('isAdmin') ? 'Verifikasi ' : 'Pengajuan') . ' Capaian Unggulan';
         $data['columns'] = [
             [
                 'column' => 'nim',
@@ -42,13 +47,13 @@ class VerifikasiController extends Controller
         $conditions = [];
         $conditionIn = [];
 
-        if ($request->type == 'prestasi') {
-            $conditionIn = ['type' => ['kompetisi', 'penghargaan']];
-        }
-        if ($request->type == 'portofolio') {
-            $conditionIn = ['type' => ['organisasi', 'aplikom', 'artikel', 'buku', 'desain_produk', 'film']];
-        }
-        $data['records'] = $service->getListVerifikasiIndex(10, $request->p, [], $conditionIn);
+        // if ($request->type == 'prestasi') {
+        //     $conditionIn = ['type' => ['kompetisi', 'penghargaan']];
+        // }
+        // if ($request->type == 'portofolio') {
+        //     $conditionIn = ['type' => ['organisasi', 'aplikom', 'artikel', 'buku', 'desain_produk', 'film']];
+        // }
+        $data['records'] = $service->getListVerifikasiIndex(10, $request->p, []);
 
         return view('pages.verifikasi.index-list', $data);
     }
@@ -83,11 +88,18 @@ class VerifikasiController extends Controller
     public function show($id, VerifikasiService $service)
     {
         $param = explode('__', $id);
-        $data['title'] = 'Verifikasi CU ' . ucfirst($param[0]) . ' : Detail';
+        $data['title'] = (Gate::allows('isAdmin') ? 'Verifikasi' : 'Pengajuan') . ' CU ' . ucfirst($param[0]) . ' : Detail';
         $data['resource'] = self::RESOURCE;
         $data['records'] = $service->showDetailVerifikasi($param[1], $param[0]);
         $data['forms'] = $this->kolomShow($param[0]);
+        $data['forms'][] = [
+            'column' => 'type',
+            'type' => 'hidden',
+            'value' => $param[0],
+            'visibility' => [self::RESOURCE . '.show']
+        ];
         $data['type'] = $param[0];
+        $data['id'] = $param[1];
         return view('pages.form-verifikasi', $data);
     }
 
@@ -97,9 +109,10 @@ class VerifikasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id, PortofolioService $service)
     {
-        //
+        $portoController = new PortofolioController();
+        return $portoController->edit($request, $id, $service);
     }
 
     /**
@@ -109,9 +122,22 @@ class VerifikasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, PortofolioService $service)
     {
-        //
+        try {
+            $this->authorize('isAdmin');
+            $data = ['approval_status' => Model::APPROVE];
+            $porto = $service->savePortofolio($data, $request->type, $id);
+
+            $code = self::SUCCESS;
+            $msg = 'Berhasil melakukan approve portofolio (' . $request->type . ')';
+            $url = route(self::RESOURCE . '.index');
+        } catch (Exception $e) {
+            $code = self::ERROR;
+            $msg = 'Gagal tambah portofolio (' . $request->type . ') : ' . $e->getMessage();
+            $url = route(self::RESOURCE . '.show',  $request->type . '__' . $id);
+        }
+        return redirect($url)->with($code, $msg);
     }
 
     /**
@@ -307,13 +333,13 @@ class VerifikasiController extends Controller
             $add = [
                 [
                     'column' => 'event',
-                    'name' => 'Judul Bukut',
+                    'name' => 'Judul Buku',
                     'type' => 'text',
                     'visibility' => [self::RESOURCE . '.show'],
                     'readonly' => true,
                 ],
                 [
-                    'column' => 'type',
+                    'column' => 'category',
                     'name' => 'Jenis Buku',
                     'type' => 'text',
                     'visibility' => [self::RESOURCE . '.show'],
