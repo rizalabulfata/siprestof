@@ -6,70 +6,68 @@
 @section('alter-content')
     <div class="col-12">
         <div class="card mb-4">
-            <x-alert :type="true" />
+            <x-alert :type="'a'" />
             <div class="card-header pb-0">
                 <a href="{{ route($resource . '.index') }}" type="button" class="btn btn-default"><i
                         class="fas fa-arrow-left"></i><span class="ps-2">Kembali</span></a>
                 <h6>{{ $title ?? '' }}</h6>
             </div>
-            @if ($id)
-                <form class="p-3" method="POST" action="{{ route($resource . '.update', $id) }}">
-                    @method('PUT')
-                @else
-                    <form class="p-3" method="POST" action="{{ route($resource . '.store') }}">
-            @endif
-            @csrf
-            <input type="hidden" id="typecu">
-            @isset($forms)
-                @foreach ($forms as $form)
-                    @isset($form['visibility'])
-                        @foreach ($form['visibility'] as $v)
-                            @if (in_array($v, $allowedVisibility))
-                                @if ($form['type'] == 'text')
-                                    <x-input-text :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
-                                        :readonly="@$form['readonly']" />
-                                @elseif($form['type'] == 'select')
-                                    <x-input-select :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])"
-                                        :options="@$form['options']" />
-                                @elseif($form['type'] == 'email')
-                                    <x-input-email :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])" />
-                                @elseif($form['type'] == 'number')
-                                    <x-input-number :label="$form['name']" :name="$form['column']"
-                                        :required="@$form['required']":value="old($form['column'])" />
-                                @elseif($form['type'] == 'textarea')
-                                    <x-input-textarea :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])" />
-                                @elseif($form['type'] == 'date')
-                                    <x-input-date :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column'])" />
-                                @elseif($form['type'] == 'hidden')
-                                    <x-input-hidden :name="$form['column']" :value="old($form['column']) ?? @$form['value']" />
+            <form class="p-3" method="POST" action="{{ route($resource . '.store') }}">
+                @csrf
+                <input type="hidden" id="typecu">
+                @isset($forms)
+                    @foreach ($forms as $form)
+                        @isset($form['visibility'])
+                            @foreach ($form['visibility'] as $v)
+                                @if (in_array($v, $allowedVisibility))
+                                    @if ($form['type'] == 'text')
+                                        <x-input-text :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
+                                            :readonly="@$form['readonly']" />
+                                    @elseif($form['type'] == 'select')
+                                        <x-input-select :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
+                                            :options="@$form['options']" :readonly="@$form['readonly']" />
+                                    @elseif($form['type'] == 'email')
+                                        <x-input-email :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
+                                            :readonly="@$form['readonly']" />
+                                    @elseif($form['type'] == 'number')
+                                        <x-input-number :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
+                                            :readonly="@$form['readonly']" />
+                                    @elseif($form['type'] == 'textarea')
+                                        <x-input-textarea :label="$form['name']" :name="$form['column']" :required="@$form['required']"
+                                            :value="old($form['column']) ?? $records->{$form['column']}" :readonly="@$form['readonly']" />
+                                    @elseif($form['type'] == 'date')
+                                        <x-input-date :label="$form['name']" :name="$form['column']" :required="@$form['required']" :value="old($form['column']) ?? $records->{$form['column']}"
+                                            :readonly="@$form['readonly']" />
+                                    @endif
                                 @endif
-                            @endif
-                        @endforeach
-                    @endisset
-                @endforeach
-            @endisset
+                            @endforeach
+                        @endisset
+                    @endforeach
+                @endisset
+                @if (isset($records->documentation) || isset($records->certificate) || isset($records->mockup))
+                    <div class="form-group">
+                        <a class="btn  btn-info" onclick="getDocumentVerif('{{ $records->id }}', '{{ $type }}')">
+                            <i class="fas fa-folder-open"></i>
 
-            @if (isset($records->documentation) || isset($records->certificate) || isset($records->mockup))
-                <div class="form-group">
-                    <a class="btn  btn-info" onclick="getDocumentVerif('{{ $records->id }}', '{{ $type }}')">
-                        <i class="fas fa-folder-open"></i>
-                        @if ($type == 'desain_produk')
-                            <span class="ps-2">Lihat Mockup Desain</span>
-                        @elseif($type == 'organisasi')
-                            <span class="ps-2">Lihat Sertifikat Organisasi</span>
-                        @else
-                            <span class="ps-2">Lihat Bukti Sertifikat dan Dokumentasi</span>
+                            @if ($type == 'desain_produk')
+                                <span class="ps-2">Lihat Mockup Desain</span>
+                            @elseif($type == 'organisasi')
+                                <span class="ps-2">Lihat Sertifikat Organisasi</span>
+                            @else
+                                <span class="ps-2">Lihat Bukti Sertifikat dan Dokumentasi</span>
+                            @endif
+                        </a>
+                    </div>
+                @endif
+                <div class="text-end">
+                    @can('isMahasiswa')
+                        @if (Route::currentRouteName() == 'verifikasi.edit')
+                            <button type="submit" class="btn btn-success btn-sm">Simpan</button>
+                            <a type="button" href="{{ isset($resource) ? route($resource . '.index') : '#' }}"
+                                class="btn btn-danger btn-sm">Batal</a>
                         @endif
-                    </a>
+                    @endcan
                 </div>
-            @endif
-            <div class="text-end">
-                @can('isAdmin')
-                    <button type="submit" class="btn btn-success btn-sm">Terima</button>
-                    <a type="button" href="{{ isset($resource) ? route($resource . '.index') : '#' }}"
-                        class="btn btn-danger btn-sm">Tolak</a>
-                @endcan
-            </div>
             </form>
         </div>
     </div>
@@ -126,7 +124,7 @@
 
                         if (imgExtension.indexOf(extension) != -1) {
                             let img = new Image();
-                            let url = '{{ asset('storage') }}/' + e.name
+                            let url = '{{ asset('storage/') }}/' + e.name
                             img.src = url
                             img.classList.add('img-fluid');
                             img.classList.add('pb-3');
@@ -134,7 +132,7 @@
                         } else if (extension == 'pdf') {
                             let boxIframe = document.createElement('div')
                             let iframe = document.createElement('iframe')
-                            let url = '{{ asset('storage') }}/' + e.name
+                            let url = '{{ asset('storage/') }}/' + e.name
                             iframe.src = url
                             iframe.width = 800
                             boxIframe.classList.add('img-fluid');
@@ -223,6 +221,44 @@
                 })
             })
 
+            return response.json();
+        }
+
+        second_name_element = document.getElementById('kod_second_name')
+        kodifikasi_element = document.getElementById('kodifikasi_id')
+        kodifikasi_element.disabled = second_name_element ? true : false
+        if (second_name_element) {
+
+
+            second_name_element.addEventListener('change', function(event) {
+                kodifikasi_element.length = 0
+                let value = event.target.value
+                if (!value) {
+                    return false
+                }
+                let data = callKodifikasi(value)
+                data.then((i) => {
+                    kodifikasi_element.disabled = false
+                    Object.entries(i).forEach(entry => {
+                        const [key, value] = entry;
+                        var option = document.createElement('option')
+                        option.text = value
+                        option.value = key
+                        kodifikasi_element.add(option)
+                    });
+                })
+            })
+        }
+        async function callKodifikasi(type) {
+            const response = await fetch("{{ route('api.kodifikasi') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    'type': type
+                })
+            })
             return response.json();
         }
     </script>

@@ -7,9 +7,11 @@
     'label' => isset($text) ? $text : 'input text',
     'value' => isset($value) ? $value : null,
     'required' => false,
+    'readonly' => false,
     'placeholders' => null,
     'options' => [],
 ])
+
 <div class="form-group">
     <label for="{{ $id }}" class="form-control-label">
         {{ $label }}
@@ -18,10 +20,18 @@
         @endif
     </label>
     <select @if ($required) required @endif class="form-control" name="{{ $name }}"
-        id="{{ $id }}">
+        id="{{ $id }}" @if ($readonly) readonly @endif>
+        @if (!$readonly)
+            <option value="">-- Pilih {{ $label }} --</option>
+        @endif
         @foreach ($options as $v => $l)
-            <option @if ($v == $value) selected @endif value="{{ $v }}">{{ $l }}
-            </option>
+            @if (!$readonly)
+                <option @if ($v == $value) selected @endif value="{{ $v }}">{{ $l }}
+                </option>
+            @elseif($readonly && $v == $value)
+                <option @if ($v == $value) selected @endif value="{{ $v }}">{{ $l }}
+                </option>
+            @endif
         @endforeach
     </select>
     @error($name)

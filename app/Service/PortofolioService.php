@@ -2,9 +2,16 @@
 
 namespace App\Service;
 
+use App\Models\HKAplikom;
+use App\Models\HKArtikel;
+use App\Models\HKBuku;
+use App\Models\HKDesainProduk;
+use App\Models\HKFilm;
 use App\Models\Kompetisi;
 use App\Models\Mahasiswa;
 use App\Models\Model;
+use App\Models\Organisasi;
+use App\Models\Penghargaan;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +43,9 @@ class PortofolioService extends Service
             $this->table_hkbuku => 'name',
             $this->table_hkdesainproduk => 'bentuk_desain',
             $this->table_hkfilm => 'name',
-            $this->table_organisasi => 'name'
+            $this->table_organisasi => 'name',
+            $this->table_penghargaan => 'name',
+            $this->table_kompetisi => 'name'
         ];
 
         $mhsColumn = [
@@ -105,7 +114,9 @@ class PortofolioService extends Service
             'buku' => $this->table_hkbuku,
             'desain_produk' => $this->table_hkdesainproduk,
             'film' => $this->table_hkfilm,
-            'organisasi' => $this->table_organisasi
+            'organisasi' => $this->table_organisasi,
+            'penghargaan' => $this->table_penghargaan,
+            'kompetisi' => $this->table_kompetisi
         ];
 
         $result = [];
@@ -144,17 +155,21 @@ class PortofolioService extends Service
      * Tampilkan list portofolio belum di approve
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getPendingPortofolio()
+    public function getPendingPortofolio($mhsId = null)
     {
         $karya = [
             $this->table_hkaplikom, $this->table_hkartikel, $this->table_hkbuku,
-            $this->table_hkdesainproduk, $this->table_hkfilm, $this->table_organisasi
+            $this->table_hkdesainproduk, $this->table_hkfilm, $this->table_organisasi,
+            $this->table_kompetisi, $this->table_penghargaan
         ];
         $data = [];
         foreach ($karya as $table) {
             $records = DB::table($table)
-                ->join($this->table_mahasiswa, $this->table_mahasiswa . '.id', '=', $table . '.mahasiswa_id')
-                ->where('approval_status', '=', Model::PENDING)
+                ->join($this->table_mahasiswa, $this->table_mahasiswa . '.id', '=', $table . '.mahasiswa_id');
+            if ($mhsId) {
+                $records->where($this->table_mahasiswa . '.id', '=', $mhsId);
+            }
+            $records = $records->where('approval_status', '=', Model::PENDING)
                 ->get([
                     $this->table_mahasiswa . '.id',
                     $this->table_mahasiswa . '.nim',
@@ -173,5 +188,95 @@ class PortofolioService extends Service
 
         $records = collect($data)->sortBy('created_at', SORT_REGULAR, true);
         return $records;
+    }
+
+    /**
+     * Ambil kodifikasi bentuk dropdown
+     * @param string $type
+     * @return \Illuminate\Support\Collection
+     */
+    public function getKodifikasi($type)
+    {
+        $records = DB::table($this->table_kodifikasi);
+        if ($type == 'organisasi') {
+            $records->whereIn('bidang', ['org_ket', 'org_waket', 'org_sekret', 'org_benda', 'org_gp', 'org_member']);
+        } else {
+            $karya = ['aplikom', 'artikel', 'buku', 'desain_produk', 'film'];
+            $type = in_array($type, $karya) ? 'karya' : $type;
+            $records->where('bidang', '=', $type);
+        }
+        return $records->get();
+    }
+
+    /**
+     * Simpan data portofolio
+     * @param array $data
+     * @param string $type
+     * @return \App\Models\Model
+     */
+    public function savePortofolio($data, $type, $id = null)
+    {
+        $model = $this->getModel($type);
+        if ($id) {
+            $model = $this->getModel($type)->findOrFail($id);
+        }
+
+        // handel file dokumentasi
+        $documentation = [];
+        if (isset($data['documentation']) && is_array($data['documentation'])) {
+            foreach ($data['documentation'] as $file) {
+                $name = $file->store('public/documentations/' . $data['mahasiswa_id']);
+                $name = str_replace('public/', '', $name);
+                $documentation[]['name'] = $name;
+            }
+            $data['documentation'] = json_encode($documentation);
+        }
+
+        // handle file sertifikat
+        $certificate = [];
+        if (isset($data['certificate']) && is_array($data['certificate'])) {
+            foreach ($data['certificate'] as $file) {
+                $name = $file->store('public/certificates/' . $data['mahasiswa_id']);
+                $name = str_replace('public/', '', $name);
+                $certificate[]['name'] = $name;
+            }
+            $data['certificate'] = json_encode($certificate);
+        }
+
+        // handle file mockup
+        $mockup = [];
+        if (isset($data['mockup']) && is_array($data['mockup'])) {
+            foreach ($data['mockup'] as $file) {
+                $name = $file->store('public/mockups/' . $data['mahasiswa_id']);
+                $name = str_replace('public/', '', $name);
+                $mockup[]['name'] = $name;
+            }
+            $data['mockup'] = json_encode($mockup);
+        }
+
+        $model->fill($data);
+        $model->save();
+        return $model;
+    }
+
+    /**
+     * Get model berdasarsarkan type
+     * @param string $type
+     * @return \App\Models\Model
+     */
+    private function getModel($type)
+    {
+        $models = [
+            'aplikom' => new HKAplikom(),
+            'artikel' => new HKArtikel(),
+            'buku' => new HKBuku(),
+            'desain_produk' => new HKDesainProduk(),
+            'film' => new HKFilm(),
+            'kompetisi' => new Kompetisi(),
+            'penghargaan' => new Penghargaan(),
+            'organisasi' => new Organisasi()
+        ];
+
+        return $models[$type];
     }
 }

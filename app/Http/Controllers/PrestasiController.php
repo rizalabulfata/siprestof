@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use App\Models\Model;
 use App\Service\PrestasiService;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class PrestasiController extends Controller
@@ -26,29 +27,30 @@ class PrestasiController extends Controller
         // filter
         $filters = [];
         if ($request->search_box) {
-            $filters = [
-                (new Mahasiswa())->getTable() . '.nim' => $request->search_box,
-                (new Mahasiswa())->getTable() . '.name' => $request->search_box,
-                // 'valid_date' => $request->search_box,
-            ];
+            // $filters = [
+            //     (new Mahasiswa())->getTable() . '.nim' => $request->search_box,
+            //     (new Mahasiswa())->getTable() . '.name' => $request->search_box,
+            //     // 'valid_date' => $request->search_box,
+            // ];
         }
 
-        $data['buttons'] = [
-            [
-                'url' => route('prestasi.create', ['type' => 'kompetisi']),
-                'class' => 'btn btn-outline-success',
-                'icon' => 'fas fa-plus',
-                'text' => 'Tambah Kompetisi'
-            ],
-            [
-                'url' => route('prestasi.create', ['type' => 'penghargaan']),
-                'class' => 'btn btn-outline-success',
-                'icon' => 'fas fa-plus',
-                'text' => 'Tambah Penghargaan'
-            ],
-        ];
+        // $data['buttons'] = [
+        //     [
+        //         'url' => route('prestasi.create', ['type' => 'kompetisi']),
+        //         'class' => 'btn btn-outline-success',
+        //         'icon' => 'fas fa-plus',
+        //         'text' => 'Tambah Kompetisi'
+        //     ],
+        //     [
+        //         'url' => route('prestasi.create', ['type' => 'penghargaan']),
+        //         'class' => 'btn btn-outline-success',
+        //         'icon' => 'fas fa-plus',
+        //         'text' => 'Tambah Penghargaan'
+        //     ],
+        // ];
 
-        $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
+        // $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
+        $data['records'] = new LengthAwarePaginator([], 0, 1);
 
         return view('pages.index-list', $data);
     }

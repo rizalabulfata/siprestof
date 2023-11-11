@@ -64,7 +64,7 @@
                     'label' => 'Judul Bukut',
                 ],
                 [
-                    'column' => 'type',
+                    'column' => 'category',
                     'label' => 'Jenis Buku',
                 ],
                 [
@@ -135,6 +135,56 @@
                 [
                     'column' => 'sk_number',
                     'label' => 'SK Jabatan',
+                ],
+            ];
+        } elseif ($type == 'kompetisi') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'label' => 'Nama Kompetisi',
+                ],
+                [
+                    'column' => 'kod_kategori',
+                    'label' => 'Kategori',
+                ],
+                [
+                    'column' => 'desc',
+                    'label' => 'Deskripsi',
+                ],
+                [
+                    'column' => 'organizer',
+                    'label' => 'Penyelenggara',
+                ],
+                [
+                    'column' => 'type',
+                    'label' => 'Tim/Individu',
+                ],
+                [
+                    'column' => 'year',
+                    'label' => 'Tahun',
+                ],
+            ];
+        } elseif ($type == 'penghargaan') {
+            $add = [
+                [
+                    'column' => 'name',
+                    'label' => 'Penghargaan',
+                ],
+                [
+                    'column' => 'desc',
+                    'label' => 'Deskripsi',
+                ],
+                [
+                    'column' => 'kod_kategori',
+                    'label' => 'Tingkat',
+                ],
+                [
+                    'column' => 'institution',
+                    'label' => 'Institusi',
+                ],
+                [
+                    'column' => 'date',
+                    'label' => 'Tanggal',
                 ],
             ];
         }

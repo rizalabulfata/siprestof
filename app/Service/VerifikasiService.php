@@ -8,6 +8,7 @@ use App\Models\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -17,19 +18,25 @@ class VerifikasiService extends Service
      * ambil seluruh data portofolio mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListVerifikasiIndex($n = 10, $p = null, $conditions = [], $conditionsIn = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListVerifikasiIndex($n = 10, $p = null, $authCheck = false, $conditions = [], $conditionsIn = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
 
         // ambil pending prestasi
-        $prestasiService = new PrestasiService();
-        $prestasi = $prestasiService->getPendingPrestasi();
+        // $prestasiService = new PrestasiService();
+        // $prestasi = $prestasiService->getPendingPrestasi();
 
         // ambil pending portofolio
         $portoService = new PortofolioService();
-        $porto = $portoService->getPendingPortofolio();
-        $result = collect(array_merge($prestasi->toArray(), $porto->toArray()));
+        $mhsId = null;
+        if (Gate::allows('isMahasiswa')) {
+            $mhsId = auth()->user()->mahasiswa->id;
+        }
+
+        $porto = $portoService->getPendingPortofolio($mhsId);
+        $result = collect($porto->toArray());
+        // $result = collect(array_merge($prestasi->toArray(), $porto->toArray()));
         if (!empty($conditions)) {
             foreach ($conditions as $key => $value) {
                 if ($value) {
@@ -80,6 +87,7 @@ class VerifikasiService extends Service
             $this->table_kodifikasi . '.code as kod_code',
             $this->table_kodifikasi . '.second_name as kod_second_name',
             $this->table_kodifikasi . '.kategori as kod_kategori',
+            $this->table_kodifikasi . '.skor',
             $this->table_mahasiswa . '.nim as mhs_nim',
             $this->table_mahasiswa . '.name as mhs_name',
             $tables[$type] . '.' . $cname . ' as event',

@@ -21,8 +21,8 @@ class OrganisasiFactory extends Factory
             'year_end' => fake()->numberBetween(2010, 2020),
             'sk_number' => fake()->uuid,
             'certificate' => json_encode([
-                ['name' => 'certificate.jpg'],
-                ['name' => 'dummy.pdf']
+                ['name' => 'fake/certificate.jpg'],
+                ['name' => 'fake/dummy.pdf']
             ])
         ];
     }
