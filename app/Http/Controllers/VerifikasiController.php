@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class VerifikasiController extends Controller
 {
@@ -124,13 +125,17 @@ class VerifikasiController extends Controller
      */
     public function update(Request $request, $id, PortofolioService $service)
     {
+        Validator::make($request->all(), [
+            'approval_status' => 'in:approve,reject',
+            'type' => 'in:aplikom,artikel,buku,desain_produk,film,kompetisi,penghargaan,organisasi',
+        ])->validated();
         try {
             $this->authorize('isAdmin');
-            $data = ['approval_status' => Model::APPROVE];
+            $data = ['approval_status' => $request->approval_status];
             $porto = $service->savePortofolio($data, $request->type, $id);
 
             $code = self::SUCCESS;
-            $msg = 'Berhasil melakukan approve portofolio (' . $request->type . ')';
+            $msg = 'Berhasil melakukan ' . strtoupper($request->approval_status) . ' portofolio (' . $request->type . ')';
             $url = route(self::RESOURCE . '.index');
         } catch (Exception $e) {
             $code = self::ERROR;
