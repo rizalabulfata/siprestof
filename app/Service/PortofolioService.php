@@ -130,6 +130,7 @@ class PortofolioService extends Service
                     $this->table_kodifikasi . '.code as kod_code',
                     $this->table_kodifikasi . '.second_name as kod_second_name',
                     $this->table_kodifikasi . '.kategori as kod_kategori',
+                    $this->table_kodifikasi . '.skor',
                     $this->table_mahasiswa . '.nim as mhs_nim',
                     $this->table_mahasiswa . '.name as mhs_name',
                     $table . '.*'
