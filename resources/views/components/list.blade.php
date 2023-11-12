@@ -13,7 +13,22 @@
             <x-alert :type="true" />
             <div class="card-header pb-0">
                 <h6>{{ $title }}</h6>
-                @can('isMahasiswa')
+                @if (!empty($buttons))
+                    @foreach ($buttons as $button)
+                        @isset($button['role'])
+                            @can($button['role'])
+                                <a href="{{ $button['url'] }}" class="{{ $button['class'] }}">
+                                    @if (isset($button['icon']))
+                                        <i class="{{ $button['icon'] }}">
+                                        </i>
+                                    @endif
+                                    {{ @$button['text'] }}
+                                </a>
+                            @endcan
+                        @endisset
+                    @endforeach
+                @endif
+                {{-- @can('isMahasiswa')
                     @if (!empty($buttons))
                         @foreach ($buttons as $button)
                             <a href="{{ $button['url'] }}" class="{{ $button['class'] }}">
@@ -28,7 +43,7 @@
                         <a href="{{ route($resource . '.create') }}" class="btn btn-primary btn-xs"><i
                                 class="fas fa-plus"></i>Tambah</a>
                     @endif
-                @endcan
+                @endcan --}}
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
