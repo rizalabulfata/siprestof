@@ -72,14 +72,14 @@
                                                     <a href="{{ route('verifikasi.show', $record->type . '__' . $record->event_id) }}"
                                                         class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                                                     @can('isMahasiswa')
-                                                        <a href="{{ route($resource . '.edit', $record->event_id . '__' . $record->type) }}"
+                                                        {{-- <a href="{{ route($resource . '.edit', $record->event_id . '__' . $record->type) }}"
                                                             class="btn btn-warning btn-sm" data-toggle="tooltip"
                                                             data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
                                                         @csrf @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm"
                                                             data-toggle="tooltip" data-placement="top" title="Hapus"><i
-                                                                class="far fa-trash-alt"></i></a>
-                                                        @endcan
+                                                                class="far fa-trash-alt"></i></a> --}}
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -13,8 +13,9 @@
                 <h6>{{ $title ?? '' }}</h6>
             </div>
             @if ($id)
-                <form class="p-3" method="POST" action="{{ route($resource . '.update', $id) }}">
-                    @method('PUT')
+                {{-- <form class="p-3" method="POST" action="{{ route($resource . '.update', $id) }}">
+                    @method('PUT') --}}
+                <div class="container">
                 @else
                     <form class="p-3" method="POST" action="{{ route($resource . '.store') }}">
             @endif
@@ -65,13 +66,41 @@
             @endif
             <div class="text-end">
                 @can('isAdmin')
-                    <button type="submit" class="btn btn-success btn-sm">Terima</button>
-                    <a type="button" href="{{ isset($resource) ? route($resource . '.index') : '#' }}"
-                        class="btn btn-danger btn-sm">Tolak</a>
+                    @php
+                        foreach ($forms as $form) {
+                            if ($form['type'] == 'hidden') {
+                                $hiddenTypeVerifikasi = $form['value'];
+                            }
+                        }
+                    @endphp
+                    <div class="d-flex flex-row-reverse bd-highlight">
+                        <form method="POST" action="{{ route($resource . '.update', $id) }}">
+                            @method('PUT')
+                            @csrf
+                            <input type="hidden" name="approval_status" value="{{ \App\Models\Model::REJECT }}">
+                            @isset($hiddenTypeVerifikasi)
+                                <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
+                            @endisset
+                            <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
+                        </form>
+                        <form method="POST" class="pe-3" action="{{ route($resource . '.update', $id) }}">
+                            @method('PUT')
+                            @csrf
+                            <input type="hidden" name="approval_status" value="{{ \App\Models\Model::APPROVE }}">
+                            @isset($hiddenTypeVerifikasi)
+                                <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
+                            @endisset
+                            <button type="submit" class="btn btn-success btn-sm">Terima</button>
+                        </form>
+                    </div>
                 @endcan
             </div>
-            </form>
+            @if ($id)
         </div>
+    @else
+        </form>
+        @endif
+    </div>
     </div>
 
     <!-- Modal -->

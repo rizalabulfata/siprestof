@@ -80,19 +80,23 @@
                                             @php
                                                 $id = $record->id ?? ($record['id'] ?? ($record->event_id ?? $record['event_id']));
                                                 $portoApprove = ['aplikom', 'artikel', 'buku', 'desain_produk', 'film', 'kompetisi', 'penghargaan', 'organisasi'];
+                                                $allowsEditDelete = ['mahasiswa.index'];
                                             @endphp
                                             @can('isAdmin')
                                                 <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
                                                     <a href="{{ route($resource . '.show', $id) }}"
                                                         class="btn btn-info btn-sm" data-toggle="tooltip"
                                                         data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
-                                                    <a href="{{ route($resource . '.edit', $id) }}"
-                                                        class="btn btn-warning btn-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Edit"><i class="fas fa-pen"></i></a>
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                        data-toggle="tooltip" data-placement="top" title="Hapus"><i
-                                                            class="far fa-trash-alt"></i></a>
+                                                    @if (in_array(Route::currentRouteName(), $allowsEditDelete))
+                                                        <a href="{{ route($resource . '.edit', $id) }}"
+                                                            class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Edit"><i
+                                                                class="fas fa-pen"></i></a>
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                                class="far fa-trash-alt"></i></a>
+                                                    @endif
                                                 </form>
                                             @else
                                                 <form
