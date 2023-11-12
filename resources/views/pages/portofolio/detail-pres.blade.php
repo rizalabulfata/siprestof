@@ -37,6 +37,10 @@
                     'column' => 'desc',
                     'label' => 'Deskripsi',
                 ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
+                ],
             ];
         } elseif ($type == 'artikel') {
             $add = [
@@ -55,6 +59,10 @@
                 [
                     'column' => 'url',
                     'label' => 'Link Artikel',
+                ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
                 ],
             ];
         } elseif ($type == 'buku') {
@@ -83,6 +91,10 @@
                     'column' => 'year',
                     'label' => 'Tahun',
                 ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
+                ],
             ];
         } elseif ($type == 'desain_produk') {
             $add = [
@@ -93,6 +105,10 @@
                 [
                     'column' => 'year',
                     'label' => 'Tahun',
+                ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
                 ],
             ];
         } elseif ($type == 'film') {
@@ -117,6 +133,10 @@
                     'column' => 'url',
                     'label' => 'Tautan',
                 ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
+                ],
             ];
         } elseif ($type == 'organisasi') {
             $add = [
@@ -135,6 +155,10 @@
                 [
                     'column' => 'sk_number',
                     'label' => 'SK Jabatan',
+                ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
                 ],
             ];
         } elseif ($type == 'kompetisi') {
@@ -163,6 +187,10 @@
                     'column' => 'year',
                     'label' => 'Tahun',
                 ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
+                ],
             ];
         } elseif ($type == 'penghargaan') {
             $add = [
@@ -185,6 +213,10 @@
                 [
                     'column' => 'date',
                     'label' => 'Tanggal',
+                ],
+                [
+                    'column' => 'skor',
+                    'label' => 'Skor',
                 ],
             ];
         }
@@ -234,17 +266,29 @@
                                                 @endif
                                             </tr>
                                         @endforeach
-                                        <tr>
+
+                                        @if (isset($record->details->certificate) || isset($record->details->documentation) || isset($record->details->mockup))
+                                            <tr>
+                                                <td>Bukti</td>
+                                                <td>:</td>
+                                                <td>
+                                                    {{-- <a class="btn btn-sm btn-success"
+                                                    href="{{ route('prestasi.detail', ['id' => $details->id, 'type' => $details->type]) }}"
+                                                    onclick="getDocument(1)">Lihat</a> --}}
+                                                    <button class="btn btn-sm btn-success" href="#"
+                                                        onclick="getDocument('{{ $details->id }}', '{{ $details->table_type }}')">Lihat</button>
+                                                </td>
+                                            </tr>
+                                        @else
                                             <td>Bukti</td>
                                             <td>:</td>
                                             <td>
-                                                {{-- <a class="btn btn-sm btn-success"
-                                                    href="{{ route('prestasi.detail', ['id' => $details->id, 'type' => $details->type]) }}"
-                                                    onclick="getDocument(1)">Lihat</a> --}}
-                                                <button class="btn btn-sm btn-success" href="#"
-                                                    onclick="getDocument('{{ $details->id }}', '{{ $details->table_type }}')">Lihat</button>
+                                                <button class="btn btn-sm btn-secondary disabled" href="#"
+                                                    onclick="getDocument('{{ $details->id }}', '{{ $details->table_type }}')"><span
+                                                        class="fst-italic">Tidak Tersedia</span></button>
                                             </td>
-                                        </tr>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                     <tr></tr>
                                 </tbody>
@@ -265,13 +309,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
                 </div>
                 <div class="modal-body">
-                    <div class="">
-                        <h4>Sertifikat</h4>
-                        <div id="sertifikatBox"></div>
+                    <div id="bentuk_desain">
+                        <div class="">
+                            <h4>Mockup</h4>
+                            <div id="mockupBox"></div>
+                        </div>
                     </div>
-                    <div class="pt-3">
-                        <h4>Dokumentasi</h4>
-                        <div id="dokumentasiBox"></div>
+                    <div id="general_karya">
+                        <div class="">
+                            <h4>Sertifikat</h4>
+                            <div id="sertifikatBox"></div>
+                        </div>
+                        <div class="pt-3">
+                            <h4>Dokumentasi</h4>
+                            <div id="dokumentasiBox"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -288,68 +340,111 @@
     <script>
         function getDocument(id, type) {
             const myModalAlternative = new bootstrap.Modal('#showDocument')
+            bentuk_desain_div = document.getElementById('bentuk_desain')
+            general_karya_div = document.getElementById('general_karya')
+
+            let boxSertifikat = document.getElementById('sertifikatBox')
+            boxSertifikat.innerHTML = ""
+            let boxDokumentasi = document.getElementById('dokumentasiBox')
+            boxDokumentasi.innerHTML = ""
+            let boxMockup = document.getElementById('mockupBox')
+            boxMockup.innerHTML = ""
             var data = call(id, type);
             data.then((i) => {
                 let imgExtension = ['jpg', 'jpeg', 'png']
-                if (i.certificate) {
-                    let box = document.getElementById('sertifikatBox')
-                    box.innerHTML = ""
-                    let certs = JSON.parse(i.certificate)
-                    certs.forEach(e => {
-                        let file = e.name.split('.')
-                        let extension = file[file.length - 1].toLowerCase();
+                if (type != 'desain_produk') {
+                    general_karya_div.style.display = "block"
+                    bentuk_desain_div.style.display = "none"
+                    if (i.certificate) {
+                        let certs = JSON.parse(i.certificate)
+                        certs.forEach(e => {
+                            let file = e.name.split('.')
+                            let extension = file[file.length - 1].toLowerCase();
 
-                        if (imgExtension.indexOf(extension) != -1) {
-                            let img = new Image();
-                            let url = '{{ asset('storage/fake') }}/' + e.name
-                            img.src = url
-                            img.classList.add('img-fluid');
-                            img.classList.add('pb-3');
-                            box.appendChild(img)
-                        } else if (extension == 'pdf') {
-                            let boxIframe = document.createElement('div')
-                            let iframe = document.createElement('iframe')
-                            let url = '{{ asset('storage/fake') }}/' + e.name
-                            iframe.src = url
-                            iframe.width = 800
-                            boxIframe.classList.add('img-fluid');
-                            boxIframe.classList.add('pb-3');
-                            boxIframe.appendChild(iframe)
-                            box.appendChild(boxIframe)
-                        }
-                    });
+                            if (imgExtension.indexOf(extension) != -1) {
+                                let img = new Image();
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                img.src = url
+                                img.classList.add('img-fluid');
+                                img.classList.add('pb-3');
+                                boxSertifikat.appendChild(img)
+                            } else if (extension == 'pdf') {
+                                let boxIframe = document.createElement('div')
+                                let iframe = document.createElement('iframe')
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                iframe.src = url
+                                iframe.width = 800
+                                boxIframe.classList.add('img-fluid');
+                                boxIframe.classList.add('pb-3');
+                                boxIframe.appendChild(iframe)
+                                boxSertifikat.appendChild(boxIframe)
+                            }
+                        });
 
+                    }
+
+                    if (i.documentation) {
+
+                        let certs = JSON.parse(i.documentation)
+                        certs.forEach(e => {
+                            let file = e.name.split('.')
+                            let extension = file[file.length - 1].toLowerCase();
+
+                            if (imgExtension.indexOf(extension) != -1) {
+                                let img = new Image();
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                img.src = url
+                                img.classList.add('img-fluid');
+                                img.classList.add('pb-3');
+                                boxDokumentasi.appendChild(img)
+                            } else if (extension == 'pdf') {
+                                let boxIframe = document.createElement('div')
+                                let iframe = document.createElement('iframe')
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                iframe.src = url
+                                iframe.width = 800
+                                boxIframe.classList.add('img-fluid');
+                                boxIframe.classList.add('pb-3');
+                                boxIframe.appendChild(iframe)
+                                boxDokumentasi.appendChild(boxIframe)
+                            }
+                        });
+
+                    }
+                } else {
+                    general_karya_div.style.display = "none"
+                    bentuk_desain_div.style.display = "block"
+                    if (i.mockup) {
+
+                        let certs = JSON.parse(i.mockup)
+                        certs.forEach(e => {
+                            let file = e.name.split('.')
+                            let extension = file[file.length - 1].toLowerCase();
+
+                            if (imgExtension.indexOf(extension) != -1) {
+                                let img = new Image();
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                img.src = url
+                                img.classList.add('img-fluid');
+                                img.classList.add('pb-3');
+                                boxMockup.appendChild(img)
+                            } else if (extension == 'pdf') {
+                                let boxIframe = document.createElement('div')
+                                let iframe = document.createElement('iframe')
+                                let url = '{{ asset('storage/') }}/' + e.name
+                                iframe.src = url
+                                iframe.width = 800
+                                boxIframe.classList.add('img-fluid');
+                                boxIframe.classList.add('pb-3');
+                                boxIframe.appendChild(iframe)
+                                boxMockup.appendChild(boxIframe)
+                            }
+                        });
+
+                    }
                 }
 
-                if (i.documentation) {
-                    let box = document.getElementById('dokumentasiBox')
-                    box.innerHTML = ""
-                    let certs = JSON.parse(i.documentation)
-                    certs.forEach(e => {
-                        let file = e.name.split('.')
-                        let extension = file[file.length - 1].toLowerCase();
 
-                        if (imgExtension.indexOf(extension) != -1) {
-                            let img = new Image();
-                            let url = '{{ asset('storage/fake') }}/' + e.name
-                            img.src = url
-                            img.classList.add('img-fluid');
-                            img.classList.add('pb-3');
-                            box.appendChild(img)
-                        } else if (extension == 'pdf') {
-                            let boxIframe = document.createElement('div')
-                            let iframe = document.createElement('iframe')
-                            let url = '{{ asset('storage/fake') }}/' + e.name
-                            iframe.src = url
-                            iframe.width = 800
-                            boxIframe.classList.add('img-fluid');
-                            boxIframe.classList.add('pb-3');
-                            boxIframe.appendChild(iframe)
-                            box.appendChild(boxIframe)
-                        }
-                    });
-
-                }
                 myModalAlternative.show()
             })
 
