@@ -68,25 +68,29 @@
     <script>
         second_name_element = document.getElementById('kod_second_name')
         kodifikasi_element = document.getElementById('kodifikasi_id')
-        kodifikasi_element.disabled = true
-        second_name_element.addEventListener('change', function(event) {
-            kodifikasi_element.length = 0
-            let value = event.target.value
-            if (!value) {
-                return false
-            }
-            let data = call(value)
-            data.then((i) => {
-                kodifikasi_element.disabled = false
-                Object.entries(i).forEach(entry => {
-                    const [key, value] = entry;
-                    var option = document.createElement('option')
-                    option.text = value
-                    option.value = key
-                    kodifikasi_element.add(option)
-                });
+        if (kodifikasi_element) {
+            kodifikasi_element.disabled = true
+        }
+        if (second_name_element) {
+            second_name_element.addEventListener('change', function(event) {
+                kodifikasi_element.length = 0
+                let value = event.target.value
+                if (!value) {
+                    return false
+                }
+                let data = call(value)
+                data.then((i) => {
+                    kodifikasi_element.disabled = false
+                    Object.entries(i).forEach(entry => {
+                        const [key, value] = entry;
+                        var option = document.createElement('option')
+                        option.text = value
+                        option.value = key
+                        kodifikasi_element.add(option)
+                    });
+                })
             })
-        })
+        }
 
         async function call(type) {
             const response = await fetch("{{ route('api.kodifikasi') }}", {

@@ -31,49 +31,57 @@ class PortofolioController extends Controller
                 'url' => route('portofolio.create', ['type' => 'kompetisi']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Kompetisi'
+                'text' => 'Tambah Kompetisi',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'penghargaan']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Penghargaan'
+                'text' => 'Tambah Penghargaan',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'organisasi']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Organisasi'
+                'text' => 'Tambah Organisasi',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'buku']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Buku'
+                'text' => 'Tambah Buku',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'aplikom']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Aplikom'
+                'text' => 'Tambah Aplikom',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'artikel']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Artikel'
+                'text' => 'Tambah Artikel',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'desain_produk']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Desain Produk'
+                'text' => 'Tambah Desain Produk',
+                'role' => 'isMahasiswa'
             ],
             [
                 'url' => route('portofolio.create', ['type' => 'film']),
                 'class' => 'btn btn-outline-success',
                 'icon' => 'fas fa-plus',
-                'text' => 'Tambah Film'
+                'text' => 'Tambah Film',
+                'role' => 'isMahasiswa'
             ],
 
         ];

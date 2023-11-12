@@ -29,7 +29,7 @@
             </li>
             <li class="nav-item">
                 @php
-                    $activeUrlVerifikasi = ['mahasiswa.index', 'mahasiswa.show'];
+                    $activeUrlVerifikasi = ['mahasiswa.index', 'mahasiswa.show', 'mahasiswa.create'];
                 @endphp
                 <a class="nav-link {{ in_array(Route::currentRouteName(), $activeUrlVerifikasi) ? 'active' : '' }}"
                     @can('isAdmin')

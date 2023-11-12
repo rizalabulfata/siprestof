@@ -37,6 +37,15 @@ class MahasiswaController extends Controller
             ];
         }
         $data['records'] = $service->getListMahasiswaView(3, $request->p, ['unit', 'kelas'], [], $filters, $columns);
+        $data['buttons'] = [
+            [
+                'url' => route('mahasiswa.create'),
+                'class' => 'btn btn-primary',
+                'icon' => 'fas fa-plus',
+                'text' => 'Tambah',
+                'role' => 'isAdmin'
+            ],
+        ];
 
         return view('pages.index-list', $data);
     }
