@@ -91,7 +91,7 @@ class PortofolioService extends Service
                 $result = $value['data'];
             }
         }
-
+        $result = array_merge($result);
         $result = collect($result);
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [

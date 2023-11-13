@@ -35,7 +35,8 @@ class VerifikasiService extends Service
         }
 
         $porto = $portoService->getPendingPortofolio($mhsId);
-        $result = collect($porto->toArray());
+        $porto = array_merge($porto->toArray());
+        $result = collect($porto);
         // $result = collect(array_merge($prestasi->toArray(), $porto->toArray()));
         if (!empty($conditions)) {
             foreach ($conditions as $key => $value) {
