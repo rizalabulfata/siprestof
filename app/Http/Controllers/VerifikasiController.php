@@ -22,7 +22,7 @@ class VerifikasiController extends Controller
     public function index(Request $request, VerifikasiService $service)
     {
         $data['title'] = (Gate::allows('isAdmin') ? 'Verifikasi ' : 'Pengajuan') . ' Capaian Unggulan';
-        $data['columns'] = [
+        $identityColumns = [
             [
                 'column' => 'nim',
                 'name' => 'NIM'
@@ -31,6 +31,8 @@ class VerifikasiController extends Controller
                 'column' => 'name',
                 'name' => 'Nama'
             ],
+        ];
+        $data['columns'] = [
             [
                 'column' => 'event',
                 'name' => 'Perihal'
@@ -44,6 +46,9 @@ class VerifikasiController extends Controller
                 'name' => 'Diajukan'
             ],
         ];
+        if (Gate::allows('isAdmin')) {
+            $data['columns'] = array_merge($identityColumns, $data['columns']);
+        }
         $data['resource'] = self::RESOURCE;
         $conditions = [];
         $conditionIn = [];

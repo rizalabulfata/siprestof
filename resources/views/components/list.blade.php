@@ -49,6 +49,9 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
+                                    <th
+                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        #</th>
                                     @foreach ($columns as $column)
                                         @isset($column['visibility'])
                                             @foreach ($column['visibility'] as $v)
@@ -68,8 +71,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($records as $record)
+                                @foreach ($records as $ind => $record)
                                     <tr>
+                                        <td class="align-middle text-center text-sm">{{ $ind + 1 }}</td>
                                         @foreach ($columns as $column)
                                             @isset($column['visibility'])
                                                 @foreach ($column['visibility'] as $v)
