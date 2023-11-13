@@ -125,4 +125,22 @@ class MahasiswaService
     {
         return Unit::where('level', '=', $level)->get();
     }
+
+    public function showUnit($unitId)
+    {
+        $table_unit = (new Unit())->getTable();
+        $records = DB::table($table_unit . ' as u1')
+            ->join($table_unit . ' as u2', 'u2.parent_id', '=', 'u1.id');
+        if ($unitId) {
+            $records = $records->where('u2.id', '=', $unitId);
+        }
+        $records = $records->first([
+            'u1.id as parent_id',
+            'u1.name as parent_name',
+            'u2.id as child_id',
+            'u2.name as child_name',
+            'u2.level'
+        ]);
+        return $records;
+    }
 }

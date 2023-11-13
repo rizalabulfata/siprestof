@@ -151,9 +151,26 @@ class MahasiswaController extends Controller
                 $col['value'] = $record->{$col['column']};
                 $data['forms'][] = $col;
             }
-            return view('pages.form-show', $data);
+
+            // buat 1 record 
+            $record = [];
+            foreach ($data['forms'] as $r) {
+                $record[$r['column']] = $r['value'];
+            }
+            $data['record'] = $record;
+
+            // ambil unit
+            $data['unit'] = $service->showUnit($record['unit_id']);
+
+            return view('pages.profile-mhs', $data);
+            // return view('pages.form-show', $data);
         } catch (Exception $e) {
             $data = $e->getMessage();
+            $preMsg = 'Gagal buka profile | ';
+            if (Gate::allows('isAdmin')) {
+                return redirect(route(self::RESOURCE . '.index'))->with(self::ERROR, $preMsg . $e->getMessage());
+            }
+            return redirect(route(DashboardController::RESOURCE . '.index'))->with(self::ERROR, $preMsg . $e->getMessage());
         }
     }
 
@@ -281,7 +298,7 @@ class MahasiswaController extends Controller
             ],
             [
                 'column' => 'unit_id',
-                'name' => 'Alamat Lengkap',
+                'name' => 'Prodi',
                 'type' => 'select',
                 'options' => $options['units'] ?? [],
                 'visibility' => [self::RESOURCE . '.create', self::RESOURCE . '.show', self::RESOURCE . '.edit'],

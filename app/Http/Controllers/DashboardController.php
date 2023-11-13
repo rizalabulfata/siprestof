@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Gate;
 
 class DashboardController extends Controller
 {
+    const RESOURCE = 'dashboard';
+
     /**
      * Display a listing of the resource.
      *
