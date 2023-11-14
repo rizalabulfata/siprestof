@@ -45,21 +45,30 @@ class VerifikasiController extends Controller
                 'column' => 'created_at',
                 'name' => 'Diajukan'
             ],
+            [
+                'column' => 'approval_status',
+                'name' => 'Status'
+            ]
         ];
         if (Gate::allows('isAdmin')) {
             $data['columns'] = array_merge($identityColumns, $data['columns']);
         }
+        // if (Gate::allows('isMahasiswa')) {
+        //     $data['columns'] = array_merge($data['columns'], [['column' => 'approval_status', 'name' => 'Status']]);
+        // }
+
         $data['resource'] = self::RESOURCE;
         $conditions = [];
         $conditionIn = [];
 
-        // if ($request->type == 'prestasi') {
-        //     $conditionIn = ['type' => ['kompetisi', 'penghargaan']];
-        // }
-        // if ($request->type == 'portofolio') {
-        //     $conditionIn = ['type' => ['organisasi', 'aplikom', 'artikel', 'buku', 'desain_produk', 'film']];
-        // }
-        $data['records'] = $service->getListVerifikasiIndex(10, $request->p, []);
+        // filter
+        $filters = [];
+        if ($request->search_box) {
+            // $filters[] = ['name', $request->search_box];
+            $filters[] = ['event', $request->search_box];
+        }
+
+        $data['records'] = $service->getListVerifikasiIndex(10, $request->p, false, [], [], $filters);
 
         return view('pages.verifikasi.index-list', $data);
     }
@@ -137,6 +146,9 @@ class VerifikasiController extends Controller
         try {
             $this->authorize('isAdmin');
             $data = ['approval_status' => $request->approval_status];
+            if ($request->reject_reason) {
+                $data = array_merge($data, ['reject_reason' => $request->reject_reason]);
+            }
             $porto = $service->savePortofolio($data, $request->type, $id);
 
             $code = self::SUCCESS;

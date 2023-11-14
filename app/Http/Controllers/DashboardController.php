@@ -27,7 +27,16 @@ class DashboardController extends Controller
 
         // ambil pending portofolio
         $portoService = new PortofolioService();
-        $porto = $portoService->getPendingPortofolio();
+        $order = ['created_at', 'desc'];
+        $mhsId = null;
+        if (Gate::allows('isMahasiswa')) {
+            $mhsId = $this->getAuthActionId();
+            $order = ['updated_at', 'desc'];
+            $porto = $portoService->getUpdateInformasiPortofolio($mhsId, $order);
+        } else {
+            $porto = $portoService->getPendingPortofolio($mhsId, $order);
+        }
+
         $data['porto'] = $porto;
         $data['porto_total'] = $porto->count();
 

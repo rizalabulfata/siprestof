@@ -32,7 +32,7 @@ class PortofolioService extends Service
      * ambil seluruh data portofolio mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListPortofolioView($n = 10, $p = null, $checkAuth = false, $relations = [], $conditions = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListPortofolioView($n = 10, $p = null, $checkAuth = false, $conditions = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
@@ -61,7 +61,7 @@ class PortofolioService extends Service
                 $mhs->where('id', '=', $user->mahasiswa->id);
             }
         }
-        $mhs = $mhs->get($mhsColumn);
+        $mhs = $mhs->where('deleted_at', null)->get($mhsColumn);
 
         $result = [];
         foreach ($mhs as $m) {
@@ -72,6 +72,7 @@ class PortofolioService extends Service
                 $records = DB::table($table)->where([
                     ['mahasiswa_id', $m->id],
                     ['approval_status', Model::APPROVE],
+                    ['deleted_at', null]
                 ])->get(['id as event_id', $name . ' as event_name'])->each(function ($item) use ($table) {
                     $item->type = str_replace('hk_', '', $table);
                 })->toArray();
@@ -92,6 +93,14 @@ class PortofolioService extends Service
             }
         }
         $result = array_merge($result);
+        $result = collect($result);
+        if (!empty($search_filters)) {
+            $result = $result
+                ->filter(function ($item) use ($search_filters) {
+                    return false !== stripos($item[$search_filters[0]], $search_filters[1]);
+                });
+        }
+        $result = array_merge($result->toArray());
         $result = collect($result);
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [
@@ -126,6 +135,7 @@ class PortofolioService extends Service
                 ->join($table_kodifikasi, $table_kodifikasi . '.id', '=', $table . '.kodifikasi_id')
                 ->where($table . '.approval_status', '=', Model::APPROVE)
                 ->where($this->table_mahasiswa . '.id', '=', $id)
+                ->where($table . '.deleted_at', '=', null)
                 ->get([
                     $this->table_kodifikasi . '.code as kod_code',
                     $this->table_kodifikasi . '.second_name as kod_second_name',
@@ -156,7 +166,7 @@ class PortofolioService extends Service
      * Tampilkan list portofolio belum di approve
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getPendingPortofolio($mhsId = null)
+    public function getPendingPortofolio($mhsId = null, $order = ['created_at', 'desc'])
     {
         $karya = [
             $this->table_hkaplikom, $this->table_hkartikel, $this->table_hkbuku,
@@ -170,7 +180,7 @@ class PortofolioService extends Service
             if ($mhsId) {
                 $records->where($this->table_mahasiswa . '.id', '=', $mhsId);
             }
-            $records = $records->where('approval_status', '=', Model::PENDING)
+            $records = $records->whereIn('approval_status', [Model::PENDING, Model::REJECT])
                 ->get([
                     $this->table_mahasiswa . '.id',
                     $this->table_mahasiswa . '.nim',
@@ -187,7 +197,44 @@ class PortofolioService extends Service
             $data = array_merge($data, $records);
         }
 
-        $records = collect($data)->sortBy('created_at', SORT_REGULAR, true);
+        $records = collect($data)->sortBy($order[0], SORT_REGULAR, ($order[1] == 'desc' ? true : false));
+        return $records;
+    }
+
+    /**
+     * Tampilkan update informasi portofolio (dashboard mahasiswa)
+     */
+    public function getUpdateInformasiPortofolio($mhsId = null, $order = ['created_at', 'desc'])
+    {
+        $karya = [
+            $this->table_hkaplikom, $this->table_hkartikel, $this->table_hkbuku,
+            $this->table_hkdesainproduk, $this->table_hkfilm, $this->table_organisasi,
+            $this->table_kompetisi, $this->table_penghargaan
+        ];
+        $data = [];
+        foreach ($karya as $table) {
+            $records = DB::table($table)
+                ->join($this->table_mahasiswa, $this->table_mahasiswa . '.id', '=', $table . '.mahasiswa_id');
+            if ($mhsId) {
+                $records->where($this->table_mahasiswa . '.id', '=', $mhsId);
+            }
+            $records = $records->get([
+                $this->table_mahasiswa . '.id',
+                $this->table_mahasiswa . '.nim',
+                $this->table_mahasiswa . '.name as mhs_name',
+                $table . '.*'
+            ])
+                ->each(function ($item) use ($table, &$data) {
+                    $item->type = str_replace('hk_', '', $table);
+                    $item->event_id = $item->id;
+                    $item->event = $item->name ??  $item->bentuk_aplikom ?? $item->bentuk_desain;
+                    $item->name = $item->mhs_name;
+                })->toArray();
+
+            $data = array_merge($data, $records);
+        }
+
+        $records = collect($data)->sortBy($order[0], SORT_REGULAR, ($order[1] == 'desc' ? true : false));
         return $records;
     }
 
@@ -258,6 +305,18 @@ class PortofolioService extends Service
         $model->fill($data);
         $model->save();
         return $model;
+    }
+
+    /**
+     * Hapus data portofolio
+     * @param array $data
+     * @param string $type
+     * @return bool
+     */
+    public function deletePortofolio($id, $type)
+    {
+        $model = $this->getModel($type)->findOrFail($id);
+        return $model->delete();
     }
 
     /**

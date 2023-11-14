@@ -5,6 +5,7 @@
     'resource' => null,
     'buttons' => [],
     'allowedVisibility' => [Route::currentRouteName()],
+    'withActionButton' => true,
 ])
 
 <div class="row mt-4">
@@ -64,10 +65,12 @@
                                             @endforeach
                                         @endisset
                                     @endforeach
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Aksi
-                                    </th>
+                                    @if ($withActionButton)
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Aksi
+                                        </th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,48 +98,52 @@
                                                 @endforeach
                                             @endisset
                                         @endforeach
-                                        <td class="align-middle text-center">
-                                            @php
-                                                $id = $record->id ?? ($record['id'] ?? ($record->event_id ?? $record['event_id']));
-                                                $portoApprove = ['aplikom', 'artikel', 'buku', 'desain_produk', 'film', 'kompetisi', 'penghargaan', 'organisasi'];
-                                                $allowsEditDelete = ['mahasiswa.index'];
-                                            @endphp
-                                            @can('isAdmin')
-                                                <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
-                                                    <a href="{{ route($resource . '.show', $id) }}"
-                                                        class="btn btn-info btn-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
-                                                    @if (in_array(Route::currentRouteName(), $allowsEditDelete))
-                                                        <a href="{{ route($resource . '.edit', $id) }}"
-                                                            class="btn btn-warning btn-sm" data-toggle="tooltip"
-                                                            data-placement="top" title="Edit"><i
-                                                                class="fas fa-pen"></i></a>
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                            data-toggle="tooltip" data-placement="top" title="Hapus"><i
-                                                                class="far fa-trash-alt"></i></a>
-                                                    @endif
-                                                </form>
-                                            @else
-                                                <form
-                                                    action="{{ route($resource . '.destroy', $id . '__' . $record['type']) }}"
-                                                    method="POST">
-                                                    <a href="{{ route($resource . '.show', $id . '__' . $record['type']) }}"
-                                                        class="btn btn-info btn-sm" data-toggle="tooltip"
-                                                        data-placement="top" title="Lihat"><i class="fas fa-eye"></i></a>
-                                                    @if (!in_array($record->type ?? $record['type'], $portoApprove))
-                                                        <a href="{{ route($resource . '.edit', $id . '__' . $record['type']) }}"
-                                                            class="btn btn-warning btn-sm" data-toggle="tooltip"
-                                                            data-placement="top" title="Edit"><i
-                                                                class="fas fa-pen"></i></a>
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                            data-toggle="tooltip" data-placement="top" title="Hapus"><i
-                                                                class="far fa-trash-alt"></i></a>
-                                                    @endif
-                                                </form>
-                                            @endcan
-                                        </td>
+                                        @if ($withActionButton)
+                                            <td class="align-middle text-center">
+                                                @php
+                                                    $id = $record->id ?? ($record['id'] ?? ($record->event_id ?? $record['event_id']));
+                                                    $portoApprove = ['aplikom', 'artikel', 'buku', 'desain_produk', 'film', 'kompetisi', 'penghargaan', 'organisasi'];
+                                                    $allowsEditDelete = ['mahasiswa.index'];
+                                                @endphp
+                                                @can('isAdmin')
+                                                    <form action="{{ route($resource . '.destroy', $id) }}" method="POST">
+                                                        <a href="{{ route($resource . '.show', $id) }}"
+                                                            class="btn btn-info btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Lihat"><i
+                                                                class="fas fa-eye"></i></a>
+                                                        @if (in_array(Route::currentRouteName(), $allowsEditDelete))
+                                                            <a href="{{ route($resource . '.edit', $id) }}"
+                                                                class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                                data-placement="top" title="Edit"><i
+                                                                    class="fas fa-pen"></i></a>
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                                    class="far fa-trash-alt"></i></a>
+                                                        @endif
+                                                    </form>
+                                                @else
+                                                    <form
+                                                        action="{{ route($resource . '.destroy', $id . '__' . $record['type']) }}"
+                                                        method="POST">
+                                                        <a href="{{ route($resource . '.show', $id . '__' . $record['type']) }}"
+                                                            class="btn btn-info btn-sm" data-toggle="tooltip"
+                                                            data-placement="top" title="Lihat"><i
+                                                                class="fas fa-eye"></i></a>
+                                                        @if (!in_array($record->type ?? $record['type'], $portoApprove))
+                                                            <a href="{{ route($resource . '.edit', $id . '__' . $record['type']) }}"
+                                                                class="btn btn-warning btn-sm" data-toggle="tooltip"
+                                                                data-placement="top" title="Edit"><i
+                                                                    class="fas fa-pen"></i></a>
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                data-toggle="tooltip" data-placement="top" title="Hapus"><i
+                                                                    class="far fa-trash-alt"></i></a>
+                                                        @endif
+                                                    </form>
+                                                @endcan
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -34,6 +34,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
+                        <x-alert :type="true" />
                         <div class="col-8">
                             <h3 class="mb-0">Profil Mahasiswa </h3>
                         </div>
@@ -105,8 +106,11 @@
                     <div class="text-end">
                         <a type="button" href="{{ isset($resource) ? route($resource . '.edit', $id) : '#_' }}"
                             class="btn btn-info btn-sm">Edit</a>
-                        <a type="button" href="{{ isset($resource) ? route($resource . '.destroy', $id) : '#' }}"
-                            class="btn btn-danger btn-sm">Delete</a>
+
+                        @can('isAdmin')
+                            <a type="button" href="{{ isset($resource) ? route($resource . '.destroy', $id) : '#' }}"
+                                class="btn btn-danger btn-sm">Delete</a>
+                        @endcan
                     </div>
                 </div>
             </div>
