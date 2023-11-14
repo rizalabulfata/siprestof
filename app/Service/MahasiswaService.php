@@ -96,6 +96,7 @@ class MahasiswaService
     public function deleteMahasiswa($id)
     {
         $data = $this->showMahasiswa($id);
+        $user = $data->user->delete();
         return $data->delete();
     }
 

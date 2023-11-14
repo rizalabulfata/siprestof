@@ -18,7 +18,7 @@ class VerifikasiService extends Service
      * ambil seluruh data portofolio mahasiswa
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getListVerifikasiIndex($n = 10, $p = null, $authCheck = false, $conditions = [], $conditionsIn = [], $columns = ['*'], $order = ['updated_at', 'asc'])
+    public function getListVerifikasiIndex($n = 10, $p = null, $authCheck = false, $conditions = [], $conditionsIn = [], $search_filters = [], $columns = ['*'], $order = ['updated_at', 'asc'])
     {
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
@@ -51,6 +51,14 @@ class VerifikasiService extends Service
                     $result = $result->whereIn($key, $value);
                 }
             }
+        }
+        if (!empty($search_filters)) {
+            $result = $result
+                ->filter(function ($item) use ($search_filters) {
+                    foreach ($search_filters as $param) {
+                        return false !== stripos($item->{$param[0]}, $param[1]);
+                    }
+                });
         }
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [

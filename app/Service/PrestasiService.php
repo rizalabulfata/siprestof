@@ -31,35 +31,49 @@ class PrestasiService extends Service
         $p = $p ?: (Paginator::resolveCurrentPage() ?: 1);
         $n = $n <= 0 ? -1 : $n;
 
-        $columns = [
+        $tables = [
+            $this->table_hkaplikom => 'bentuk_aplikom',
+            $this->table_hkartikel => 'name',
+            $this->table_hkbuku => 'name',
+            $this->table_hkdesainproduk => 'bentuk_desain',
+            $this->table_hkfilm => 'name',
+            $this->table_organisasi => 'name',
+            $this->table_penghargaan => 'name',
+            $this->table_kompetisi => 'name'
+        ];
+
+        $mhsColumn = [
             $this->table_mahasiswa . '.id',
             $this->table_mahasiswa . '.nim',
-            $this->table_mahasiswa . '.name',
-            // DB::raw('count(*) as total'),
+            $this->table_mahasiswa . '.name'
         ];
-        $tables = [$this->table_kompetisi => 'name', $this->table_penghargaan => 'name'];
 
-        $mhs = DB::table($this->table_mahasiswa);
+        $mhs = DB::table($this->table_mahasiswa)->where('deleted_at', null);
         if ($checkAuth) {
             $user = auth()->user();
             if ($user->mahasiswa) {
                 $mhs->where('id', '=', $user->mahasiswa->id);
             }
         }
-        $mhs = $mhs->get($columns);
+        $mhs = $mhs->get($mhsColumn);
 
         $result = [];
         foreach ($mhs as $m) {
             $result[$m->id] = json_decode(json_encode($m), true);
             $result[$m->id]['data'] = [];
             $result[$m->id]['total'] = 0;
+            $total_skor = 0;
             foreach ($tables as $table => $name) {
-                $records = DB::table($table)->where([
-                    ['mahasiswa_id', $m->id],
-                    ['approval_status', Model::APPROVE],
-                ])->get(['id as event_id', $name . ' as event_name'])->each(function ($item) use ($table) {
-                    $item->type = str_replace('hk_', '', $table);
-                })->toArray();
+                $records = DB::table($table)
+                    ->join($this->table_kodifikasi, $this->table_kodifikasi . '.id', '=', $table . '.kodifikasi_id')
+                    ->where([
+                        ['mahasiswa_id', $m->id],
+                        ['approval_status', Model::APPROVE],
+                        [$table . '.deleted_at', null]
+                    ])->get([$table . '.id as event_id', $table . '.' . $name . ' as event_name', $this->table_kodifikasi . '.skor'])->each(function ($item) use ($table, &$total_skor) {
+                        $item->type = str_replace('hk_', '', $table);
+                        $total_skor += $item->skor;
+                    })->toArray();
                 if ($records) {
                     $result[$m->id]['data'] = array_merge(
                         $result[$m->id]['data'],
@@ -68,6 +82,7 @@ class PrestasiService extends Service
                 }
             }
             $result[$m->id]['total'] = count($result[$m->id]['data']);
+            $result[$m->id]['total_skor'] = $total_skor;
         }
 
         // jika user ambil data saja
@@ -76,8 +91,18 @@ class PrestasiService extends Service
                 $result = $value['data'];
             }
         }
-
         $result = collect($result);
+        if (!empty($search_filters)) {
+            $result = $result
+                ->filter(function ($item) use ($search_filters) {
+                    return false !== stripos($item[$search_filters[0]], $search_filters[1]);
+                });
+        }
+        $result->sortBy($order[0], SORT_REGULAR, ($order[1] == 'desc' ? true : false));
+        $result = array_merge($result->toArray());
+        $result = collect($result);
+
+
 
         return new LengthAwarePaginator($result->forPage($p, $n), $result->count(), $n, $p, [
             'path' => route('prestasi.index'),

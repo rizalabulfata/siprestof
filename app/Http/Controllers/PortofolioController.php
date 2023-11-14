@@ -23,8 +23,14 @@ class PortofolioController extends Controller
         $data['tables'] = $this->table();
         $data['resource'] = self::RESOURCE;
 
+        // filter
+        $filters = [];
+        if ($request->search_box) {
+            $filters = ['name', $request->search_box];
+        }
+
         $conditions = ['approval_status' => Model::APPROVE];
-        $data['records'] = $service->getListPortofolioView(5, $request->p, true, [], $conditions);
+        $data['records'] = $service->getListPortofolioView(5, $request->p, true, $conditions, $filters);
 
         $data['buttons'] = [
             [
@@ -304,9 +310,20 @@ class PortofolioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, PortofolioService $service)
     {
-        //
+        try {
+            $param = explode('__', $id);
+            $service->deletePortofolio($param[1], $param[0]);
+
+            $code = self::SUCCESS;
+            $msg = 'Berhasil hapus portofolio ' . ucfirst($param[0]) . ' ID : ' . $param[1];
+        } catch (Exception $e) {
+            $code = self::ERROR;
+            $msg = 'Gagal hapus portofolio : ' . $e->getMessage();
+        }
+        $url = route(self::RESOURCE . '.index');
+        return redirect($url)->with($code, $msg);
     }
 
     public function getKodifikasi(Request $request, PortofolioService $service)

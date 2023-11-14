@@ -257,11 +257,16 @@
                                                 <td>{{ $details->{$detail['column']} }}</td>
                                                 @if ($loop->index == 0)
                                                     <td rowspan="{{ count(kolomShow($record->type)) + 1 }}">
-                                                        <a href="{{ route($resource . '.edit', ['aa', 'a']) }}"
-                                                            class="btn btn-warning btn-xs"><i class="fas fa-pen"></i></a>
-                                                        <a href="{{ route($resource . '.destroy', $details->id) }}"
-                                                            class="btn btn-danger btn-xs"><i
-                                                                class="far fa-trash-alt"></i></a>
+                                                        {{-- <a href="{{ route($resource . '.edit', ['aa', 'a']) }}"
+                                                            class="btn btn-warning btn-xs"><i class="fas fa-pen"></i></a> --}}
+                                                        <form
+                                                            action="{{ route($resource . '.destroy', $record->type . '__' . $details->id) }}"
+                                                            method="POST">
+                                                            @method('DELETE')
+                                                            @csrf
+                                                            <button class="btn btn-danger btn-xs" type="submit"><i
+                                                                    class="far fa-trash-alt"></i></button>
+                                                        </form>
                                                     </td>
                                                 @endif
                                             </tr>

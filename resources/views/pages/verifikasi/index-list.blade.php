@@ -62,6 +62,14 @@
                                                         <p class="text-sm font-weight-bold mb-0">
                                                             @if ($column['column'] == 'type')
                                                                 {{ ucfirst(str_replace('_', ' ', $record->{$column['column']} ?? $record[$column['column']])) }}
+                                                            @elseif($column['column'] == 'approval_status')
+                                                                @php
+                                                                    $value = $record->{$column['column']} ?? $record[$column['column']];
+                                                                @endphp
+                                                                <span
+                                                                    class="badge bg-{{ $value == 'pending' ? 'success' : 'danger' }}">
+                                                                    {{ $value }}
+                                                                </span>
                                                             @else
                                                                 {{ $record->{$column['column']} ?? $record[$column['column']] }}
                                                             @endif
@@ -69,7 +77,6 @@
                                                     </td>
                                                 @endforeach
                                                 <td class="align-middle text-center">
-
                                                     <form
                                                         action="{{ route($resource . '.destroy', $record->event_id . '__' . $record->type) }}"
                                                         method="POST"></form>

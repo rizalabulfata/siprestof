@@ -2,6 +2,7 @@
 
 @php
     $maxShow = 5;
+    $maxShowInformasi = 20;
 @endphp
 
 @section('alter-content')
@@ -228,6 +229,49 @@
                             sisa {{ $porto_total - $maxShow }}</a>
                     </div>
                 @else
+                    @php
+                        function getMessage($status, $id = null, $jenis = null): string
+                        {
+                            $jenis = $jenis ? ucfirst($jenis) : '<jenis>';
+                            $id = $id ?? '<ID>';
+                            $data = [
+                                \App\Models\Model::PENDING => 'Portofolio ' . $jenis . ' dengan ID : ' . $id . ' sedang diajukan dan menunggu approval admin.',
+                                \App\Models\Model::REJECT => 'Mohon maaf portofolio ' . $jenis . ' dengan ID : ' . $id . ' tidak diterima, lihat detail berikut.',
+                                \App\Models\Model::APPROVE => 'Selamat, portofolio ' . $jenis . ' telah diterima.',
+                            ];
+
+                            return $data[$status];
+                        }
+                    @endphp
+                    @foreach ($porto as $p)
+                        @if ($loop->index < $maxShowInformasi)
+                            <div class="border-bottom">
+                                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                            <i class="fas fa-info-circle text-white opacity-10"></i>
+                                        </div>
+                                        <div class="d-flex flex-column bd-highlight">
+                                            <div class="bd-highlight">
+                                                <h3 class="text-sm font-weight-bold mb-0">
+                                                    {{ getMessage($p->approval_status, $p->id, $p->type) }}
+                                                </h3>
+                                            </div>
+                                            <div class=" bd-highlight">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ ucfirst($p->type) . ' : ' . $p->event }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="d-flex flex-column text-end">
+
+                                    </div>
+                                </li>
+                            </div>
+                        @endif
+                    @endforeach
                 @endcan
             </div>
         </div>

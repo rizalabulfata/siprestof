@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use App\Models\Model;
+use App\Service\PortofolioService;
 use App\Service\PrestasiService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,6 +21,9 @@ class PrestasiController extends Controller
      */
     public function index(Request $request, PrestasiService $service)
     {
+        if (Gate::allows('isMahasiswa')) {
+            return redirect(route('dashboard.index'));
+        }
         $data['title'] = 'Prestasi Mahasiswa';
         $data['tables'] = $this->table();
         $data['resource'] = self::RESOURCE;
@@ -27,11 +31,7 @@ class PrestasiController extends Controller
         // filter
         $filters = [];
         if ($request->search_box) {
-            // $filters = [
-            //     (new Mahasiswa())->getTable() . '.nim' => $request->search_box,
-            //     (new Mahasiswa())->getTable() . '.name' => $request->search_box,
-            //     // 'valid_date' => $request->search_box,
-            // ];
+            $filters = ['name', $request->search_box];
         }
 
         // $data['buttons'] = [
@@ -50,7 +50,9 @@ class PrestasiController extends Controller
         // ];
 
         // $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
-        $data['records'] = new LengthAwarePaginator([], 0, 1);
+
+
+        $data['records'] = $service->getListPrestasiView(10, $request->p, false, [], $filters, ['*'], ['total_skor', 'desc']);
 
         return view('pages.index-list', $data);
     }
@@ -97,17 +99,9 @@ class PrestasiController extends Controller
      */
     public function show($id, PrestasiService $service)
     {
-        $data['records'] = $service->showPrestasi($id);
-        $data['details_column'] = [
-            ['column' => 'name', 'label' => 'Nama Prestasi'],
-            ['column' => 'kategori', 'label' => 'Tingkat'],
-            ['column' => 'organizer', 'label' => 'Instansi/Penyelenggara'],
-            ['column' => 'year', 'label' => 'Tahun'],
-            ['column' => 'desc', 'label' => 'Deskripsi'],
-        ];
-        $data['resource'] = self::RESOURCE;
-
-        return view('pages.detail-pres', $data);
+        if (Gate::allows('isAdmin')) {
+            return redirect(route('portofolio.show', $id));
+        }
     }
 
     public function detail(Request $request, PrestasiService $service)
@@ -168,8 +162,8 @@ class PrestasiController extends Controller
                 'visibility' => [self::RESOURCE . '.index']
             ],
             [
-                'column' => 'total',
-                'name' => 'Jumlah Prestasi',
+                'column' => 'total_skor',
+                'name' => 'Jumlah Skor',
                 'visibility' => [self::RESOURCE . '.index']
             ],
         ];

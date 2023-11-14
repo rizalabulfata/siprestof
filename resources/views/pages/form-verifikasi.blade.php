@@ -74,24 +74,29 @@
                         }
                     @endphp
                     <div class="d-flex flex-row-reverse bd-highlight">
-                        <form method="POST" action="{{ route($resource . '.update', $id) }}">
+                        @if ($records->approval_status != \App\Models\Model::REJECT)
+                            {{-- <form method="POST" action="{{ route($resource . '.update', $id) }}">
                             @method('PUT')
                             @csrf
                             <input type="hidden" name="approval_status" value="{{ \App\Models\Model::REJECT }}">
                             @isset($hiddenTypeVerifikasi)
-                                <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
+                            <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
                             @endisset
                             <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
-                        </form>
-                        <form method="POST" class="pe-3" action="{{ route($resource . '.update', $id) }}">
-                            @method('PUT')
-                            @csrf
-                            <input type="hidden" name="approval_status" value="{{ \App\Models\Model::APPROVE }}">
-                            @isset($hiddenTypeVerifikasi)
-                                <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
-                            @endisset
-                            <button type="submit" class="btn btn-success btn-sm">Terima</button>
-                        </form>
+                        </form> --}}
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#rejectMsgBox">Tolak</button>
+
+                            <form method="POST" class="pe-3" action="{{ route($resource . '.update', $id) }}">
+                                @method('PUT')
+                                @csrf
+                                <input type="hidden" name="approval_status" value="{{ \App\Models\Model::APPROVE }}">
+                                @isset($hiddenTypeVerifikasi)
+                                    <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
+                                @endisset
+                                <button type="submit" class="btn btn-success btn-sm">Terima</button>
+                            </form>
+                        @endif
                     </div>
                 @endcan
             </div>
@@ -101,6 +106,14 @@
         </form>
         @endif
     </div>
+    @if ($records->approval_status == \App\Models\Model::REJECT)
+        <div class="card mt-2">
+            <div class="card-header">
+                <h6>Alasan Penolakan</h6>
+                <x-input-textarea :readonly="true" :value="$records->reject_reason" :label="''" />
+            </div>
+        </div>
+    @endif
     </div>
 
     <!-- Modal -->
@@ -131,6 +144,33 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal reject dialog-->
+    <div class="modal fade" id="rejectMsgBox" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static"
+        data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Konfirmasi alasan penolakan</h1>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route($resource . '.update', $id) }}">
+                        @method('PUT')
+                        @csrf
+                        <input type="hidden" name="approval_status" value="{{ \App\Models\Model::REJECT }}">
+                        @isset($hiddenTypeVerifikasi)
+                            <input type="hidden" name="type" value="{{ $hiddenTypeVerifikasi }}">
+                        @endisset
+                        <x-input-textarea :rows="10" :label="'Alasan :'" :name="'reject_reason'" :required="true" />
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success btn-sm">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

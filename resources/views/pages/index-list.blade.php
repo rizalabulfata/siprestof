@@ -87,5 +87,5 @@
                 </div>
             </div> --}}
     </div>
-    <x-list :records="$records" :title="$title ?? 'Daftar'" :columns="$tables" :resource="$resource" :buttons="@$buttons" />
+    <x-list :records="$records" :title="$title ?? 'Daftar'" :columns="$tables" :resource="$resource" :buttons="@$buttons" :with-action-button="@$withActionButton" />
 @endsection

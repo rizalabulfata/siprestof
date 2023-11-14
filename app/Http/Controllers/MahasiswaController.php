@@ -239,6 +239,9 @@ class MahasiswaController extends Controller
             $code = self::SUCCESS;
             $msg = 'Berhasil ubah data Mahasiswa : ' . $request->name;
             $url = route(self::RESOURCE . '.index');
+            if (Gate::allows('isMahasiswa')) {
+                $url = route(self::RESOURCE . '.show', $id);
+            }
         } catch (Exception $e) {
             $data = $e->getMessage();
             $code = self::ERROR;
@@ -257,6 +260,7 @@ class MahasiswaController extends Controller
      */
     public function destroy($id, MahasiswaService $service)
     {
+        $this->authorize('isAdmin');
         try {
             $data = $service->deleteMahasiswa($id);
             $code = self::SUCCESS;
