@@ -266,7 +266,13 @@
 
                                     </div>
                                     <div class="d-flex flex-column text-end">
-
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            <a href="{{ route('verifikasi.show', $p->type . '__' . $p->event_id) }}"
+                                                class="btn btn-primary btn-xs">Lihat</a>
+                                        </p>
+                                        <p class="text-xs font-weight-bold mb-0 fst-italic">
+                                            {{ $p->created_at }}
+                                        </p>
                                     </div>
                                 </li>
                             </div>

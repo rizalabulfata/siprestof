@@ -98,7 +98,7 @@ class PrestasiService extends Service
                     return false !== stripos($item[$search_filters[0]], $search_filters[1]);
                 });
         }
-        $result->sortBy($order[0], SORT_REGULAR, ($order[1] == 'desc' ? true : false));
+        $result = $result->sortBy($order[0], SORT_REGULAR, ($order[1] == 'desc' ? true : false));
         $result = array_merge($result->toArray());
         $result = collect($result);
 

@@ -21,9 +21,6 @@ class PrestasiController extends Controller
      */
     public function index(Request $request, PrestasiService $service)
     {
-        if (Gate::allows('isMahasiswa')) {
-            return redirect(route('dashboard.index'));
-        }
         $data['title'] = 'Prestasi Mahasiswa';
         $data['tables'] = $this->table();
         $data['resource'] = self::RESOURCE;
@@ -51,10 +48,23 @@ class PrestasiController extends Controller
 
         // $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
 
-
         $data['records'] = $service->getListPrestasiView(10, $request->p, false, [], $filters, ['*'], ['total_skor', 'desc']);
+        $view = 'pages.index-list';
+        if (Gate::allows('isMahasiswa')) {
+            $summary = [];
+            $records = $service->getListPrestasiView(0, $request->p, true, [], $filters, ['*'], ['total_skor', 'desc']);
+            foreach ($records as $v) {
+                if (!isset($summary[$v['type']])) {
+                    $summary[$v['type']] = $v['skor'];
+                } else {
+                    $summary[$v['type']] += $v['skor'];
+                }
+            }
+            $data['records'] = collect($summary);
+            $view = 'pages.index-prestasi-mhs';
+        }
 
-        return view('pages.index-list', $data);
+        return view($view, $data);
     }
 
     /**
