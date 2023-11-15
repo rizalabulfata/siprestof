@@ -31,23 +31,6 @@ class PrestasiController extends Controller
             $filters = ['name', $request->search_box];
         }
 
-        // $data['buttons'] = [
-        //     [
-        //         'url' => route('prestasi.create', ['type' => 'kompetisi']),
-        //         'class' => 'btn btn-outline-success',
-        //         'icon' => 'fas fa-plus',
-        //         'text' => 'Tambah Kompetisi'
-        //     ],
-        //     [
-        //         'url' => route('prestasi.create', ['type' => 'penghargaan']),
-        //         'class' => 'btn btn-outline-success',
-        //         'icon' => 'fas fa-plus',
-        //         'text' => 'Tambah Penghargaan'
-        //     ],
-        // ];
-
-        // $data['records'] = $service->getListPrestasiView(5, $request->p, true, [], $filters);
-
         $data['records'] = $service->getListPrestasiView(10, $request->p, false, [], $filters, ['*'], ['total_skor', 'desc']);
         $view = 'pages.index-list';
         if (Gate::allows('isMahasiswa')) {
@@ -55,9 +38,9 @@ class PrestasiController extends Controller
             $records = $service->getListPrestasiView(0, $request->p, true, [], $filters, ['*'], ['total_skor', 'desc']);
             foreach ($records as $v) {
                 if (!isset($summary[$v['type']])) {
-                    $summary[$v['type']] = $v['skor'];
+                    $summary[ucfirst($v['type'])] = $v['skor'];
                 } else {
-                    $summary[$v['type']] += $v['skor'];
+                    $summary[ucfirst($v['type'])] += $v['skor'];
                 }
             }
             $data['records'] = collect($summary);
