@@ -29,7 +29,13 @@ class DatabaseSeeder extends Seeder
         // optional seeder
         $this->call(UnitSeeder::class);
         $this->call(PegawaiSeeder::class);
-        $this->call(MahasiswaSeeder::class);
+
+        // fake data mahasiswa
+        // $this->call(MahasiswaSeeder::class);
+
+        // data asli mahasiswa PIF UTM
+        $this->call(MahasiswaPIFSeeder::class);
+
         $this->call(KelasSeeder::class);
         $this->call(KodifikasiSeeder::class);
         $this->call(KompetisiSeeder::class);
