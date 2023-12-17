@@ -32,7 +32,7 @@ class PrestasiController extends Controller
         }
 
         $data['records'] = $service->getListPrestasiView(10, $request->p, false, [], $filters, ['*'], ['total_skor', 'desc']);
-        $view = 'pages.index-list';
+        $view = 'pages.index-list-chart';
         if (Gate::allows('isMahasiswa')) {
             $summary = [];
             $records = $service->getListPrestasiView(0, $request->p, true, [], $filters, ['*'], ['total_skor', 'desc']);
@@ -46,6 +46,13 @@ class PrestasiController extends Controller
             $data['records'] = collect($summary);
             $view = 'pages.index-prestasi-mhs';
         }
+
+        // hard kluster, dari excel ibu
+        $data['hk'] = [
+            0 => 423,
+            1 => 4668,
+            2 => 805
+        ];
 
         return view($view, $data);
     }
