@@ -149,8 +149,8 @@
         var borderColors = [];
 
         label.forEach(item => {
-            bgColors.push(labelsColor[item.toLowerCase()].bg)
-            borderColors.push(labelsColor[item.toLowerCase()].border)
+            bgColors.push(labelsColor[item].bg)
+            borderColors.push(labelsColor[item].border)
         });
 
         const ctx = document.getElementById('chartBox').getContext('2d');
