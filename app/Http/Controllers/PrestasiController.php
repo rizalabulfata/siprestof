@@ -49,9 +49,9 @@ class PrestasiController extends Controller
 
         // hard kluster, dari excel ibu
         $data['hk'] = [
-            0 => 423,
-            1 => 4668,
-            2 => 805
+            'Cukup' => 69,
+            'Memuaskan' => 135,
+            'Sangat Memuaskan' => 8
         ];
 
         return view($view, $data);

@@ -110,15 +110,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
         let labelsColor = {
-            0: {
+            'Cukup': {
                 'bg': 'rgba(255, 99, 132, 0.2)',
                 'border': 'rgba(255, 99, 132, 1)',
             },
-            1: {
+            'Memuaskan': {
                 'bg': 'rgba(114, 162, 235, 0.2)',
                 'border': 'rgba(114, 162, 235, 1)',
             },
-            2: {
+            'Sangat Memuaskan': {
                 'bg': 'rgba(255, 206, 86, 0.2)',
                 'border': 'rgba(255, 206, 86, 1)',
             },
